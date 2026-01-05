@@ -526,7 +526,7 @@ public partial class SemanticIdHandler(ILogger<SemanticIdHandler> logger, IOptio
                 continue;
             }
 
-            if (!AreAllNodesOfSameType(semanticTreeNodes, out var nodeType))
+            if (!AreAllNodesOfSameType(semanticTreeNodes, out _))
             {
                 logger.LogWarning("Mixed node types found for element '{IdShort}' with SemanticId '{SemanticId}'. Expected all nodes to be either SemanticBranchNode or SemanticLeafNode. Removing element.",
                                   element.IdShort,
@@ -880,11 +880,6 @@ public partial class SemanticIdHandler(ILogger<SemanticIdHandler> logger, IOptio
         {
             logger.LogError("Expected list element with IdShort '{IdShortWithoutIndex}' not found or is not a list.", idShortWithoutIndex);
             throw new InternalDataProcessingException();
-        }
-
-        if (list.TypeValueListElement is AasSubmodelElements.SubmodelElementCollection or AasSubmodelElements.SubmodelElementList && list.Value?.Count >0)
-        {
-            return list.Value.FirstOrDefault()!;
         }
 
         if (index >= 0 && index < list.Value!.Count)

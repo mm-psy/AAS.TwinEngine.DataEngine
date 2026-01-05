@@ -5,6 +5,7 @@ using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Application;
 using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Base;
 using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Infrastructure;
 using AAS.TwinEngine.DataEngine.ApplicationLogic.Services.AasEnvironment.Providers;
+using AAS.TwinEngine.DataEngine.DomainModel.SubmodelRepository;
 
 using AasCore.Aas3_0;
 
@@ -165,12 +166,20 @@ public partial class SubmodelTemplateService(
 
     private static ISubmodelElement? GetElementAtIndex(SubmodelElementList list, int index)
     {
-        if (list.TypeValueListElement is AasSubmodelElements.SubmodelElementCollection or AasSubmodelElements.SubmodelElementList && list.Value?.Count > 0)
+        if (index < 0)
         {
-            return list.Value.FirstOrDefault()!;
+            throw new InternalDataProcessingException();
         }
 
-        if (index < 0 || index >= list.Value?.Count)
+        if (list.TypeValueListElement is AasSubmodelElements.SubmodelElementCollection or AasSubmodelElements.SubmodelElementList && list.Value?.Count > 0)
+        {
+            if (GetCardinality(list.Value.FirstOrDefault()!) is Cardinality.OneToMany or Cardinality.ZeroToMany)
+            {
+                return list.Value.FirstOrDefault()!;
+            }
+        }
+
+        if (index >= list.Value?.Count)
         {
             throw new InternalDataProcessingException();
         }
@@ -213,5 +222,18 @@ public partial class SubmodelTemplateService(
         {
             throw new InternalDataProcessingException();
         }
+    }
+
+    private static Cardinality GetCardinality(ISubmodelElement element)
+    {
+        var qualifierValue = element.Qualifiers?.FirstOrDefault()?.Value;
+        if (qualifierValue is null)
+        {
+            return Cardinality.Unknown;
+        }
+
+        return Enum.TryParse<Cardinality>(qualifierValue, ignoreCase: true, out var result)
+                   ? result
+                   : Cardinality.Unknown;
     }
 }
