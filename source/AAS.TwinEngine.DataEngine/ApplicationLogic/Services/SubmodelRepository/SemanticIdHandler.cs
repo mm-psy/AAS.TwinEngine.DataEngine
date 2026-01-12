@@ -526,7 +526,7 @@ public partial class SemanticIdHandler(ILogger<SemanticIdHandler> logger, IOptio
                 continue;
             }
 
-            if (!AreAllNodesOfSameType(semanticTreeNodes, out var nodeType))
+            if (!AreAllNodesOfSameType(semanticTreeNodes, out _))
             {
                 logger.LogWarning("Mixed node types found for element '{IdShort}' with SemanticId '{SemanticId}'. Expected all nodes to be either SemanticBranchNode or SemanticLeafNode. Removing element.",
                                   element.IdShort,
