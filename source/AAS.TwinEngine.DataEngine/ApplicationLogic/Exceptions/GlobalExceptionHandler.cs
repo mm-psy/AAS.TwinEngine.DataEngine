@@ -5,8 +5,6 @@ using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Responses;
 
 using Microsoft.AspNetCore.Diagnostics;
 
-using UnauthorizedAccessException = AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Base.UnauthorizedAccessException;
-
 namespace AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions;
 
 public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
@@ -20,9 +18,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         var statusCode = exception switch
         {
             BadRequestException => StatusCodes.Status400BadRequest,
-            ForbiddenException => StatusCodes.Status403Forbidden,
             NotFoundException => StatusCodes.Status404NotFound,
-            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
             TimeoutException => StatusCodes.Status408RequestTimeout,
             ServiceUnavailableException => StatusCodes.Status503ServiceUnavailable,
             _ => StatusCodes.Status500InternalServerError
