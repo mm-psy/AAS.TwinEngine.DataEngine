@@ -16,9 +16,9 @@ public static class TestData
         }
         },
         {
-         ""globalAssetId"": ""wago-2206-1631"",
+         ""globalAssetId"": ""mm-2206-1631"",
          ""idShort"": ""2206-1631/1000-859"",
-         ""id"": ""wago-2206-1631/1000-859"",
+         ""id"": ""mm-2206-1631/1000-859"",
          ""specificAssetIds"": [],
          ""assetInformationData"": {
            ""defaultThumbnail"": {
