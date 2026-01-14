@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AAS.TwinEngine.DataEngine.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AAS.TwinEngine.DataEngine.ModuleTests", "AAS.TwinEngine.DataEngine.ModuleTests\AAS.TwinEngine.DataEngine.ModuleTests.csproj", "{D16C8CF8-6A29-4A40-971A-9A070A1817A9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aas.TwinEngine.Plugin.TestPlugin", "Aas.TwinEngine.Plugin.TestPlugin\Aas.TwinEngine.Plugin.TestPlugin.csproj", "{455B960D-57D0-4D9B-805C-E1DEA05B9311}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aas.TwinEngine.Plugin.TestPlugin.UnitTests", "Aas.TwinEngine.Plugin.TestPlugin.UnitTests\Aas.TwinEngine.Plugin.TestPlugin.UnitTests.csproj", "{573F3A2B-8CC3-40D8-B543-74BF5DF7D4FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{D16C8CF8-6A29-4A40-971A-9A070A1817A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D16C8CF8-6A29-4A40-971A-9A070A1817A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D16C8CF8-6A29-4A40-971A-9A070A1817A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{455B960D-57D0-4D9B-805C-E1DEA05B9311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{455B960D-57D0-4D9B-805C-E1DEA05B9311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{455B960D-57D0-4D9B-805C-E1DEA05B9311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{455B960D-57D0-4D9B-805C-E1DEA05B9311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{573F3A2B-8CC3-40D8-B543-74BF5DF7D4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{573F3A2B-8CC3-40D8-B543-74BF5DF7D4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{573F3A2B-8CC3-40D8-B543-74BF5DF7D4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{573F3A2B-8CC3-40D8-B543-74BF5DF7D4FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

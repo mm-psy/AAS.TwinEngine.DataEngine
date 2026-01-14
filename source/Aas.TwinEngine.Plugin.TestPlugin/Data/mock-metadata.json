@@ -1,0 +1,50 @@
+[
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-001",
+    "idShort": "M&M01",
+    "id": "https://mm-software.com/ids/aas/000-001",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://static.wago.com/share/img/020000000001511a000200b6_DE.jpg"
+      }
+    }
+  },
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-002",
+    "idShort": "M&M02",
+    "id": "https://mm-software.com/ids/aas/000-002",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://static.wago.com/share/img/7946738_DE.jpg"
+      }
+    }
+  },
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-003",
+    "idShort": "M&M03",
+    "id": "https://mm-software.com/ids/aas/000-003",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://static.wago.com/share/img/7946737_DE.jpg"
+      }
+    }
+  },
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-004",
+    "idShort": "M&M04",
+    "id": "https://mm-software.com/ids/aas/000-004",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://static.wago.com/share/img/13289216_DE.jpg"
+      }
+    }
+  }
+]
