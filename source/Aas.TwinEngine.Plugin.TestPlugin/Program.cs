@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-using Aas.TwinEngine.Plugin.TestPlugin.Infrastructure.Providers;
+﻿using Aas.TwinEngine.Plugin.TestPlugin.Infrastructure.Providers;
 using Aas.TwinEngine.Plugin.TestPlugin.ServiceConfiguration;
 
 using Asp.Versioning;
@@ -28,13 +26,13 @@ public static class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddOpenApiDocument(settings =>
         {
-            settings.DocumentName = ApiVersion.ToString("F1", CultureInfo.InvariantCulture);
+            settings.DocumentName = ApiVersion.ToString();
             settings.Title = ApiTitle;
         });
 
         builder.Services.AddApiVersioning(options =>
         {
-            options.DefaultApiVersion = new ApiVersion(ApiVersion);
+            options.DefaultApiVersion = new ApiVersion(ApiVersion.Major, ApiVersion.Minor);
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
             options.ApiVersionReader = new HeaderApiVersionReader("api-version");
