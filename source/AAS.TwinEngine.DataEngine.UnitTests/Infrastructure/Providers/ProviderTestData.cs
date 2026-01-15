@@ -118,9 +118,9 @@ public static class ProviderTestData
                                              "specificAssetIds": []
                                            },
                                            {
-                                             "globalAssetId": "https://mm.com/ids/assets/2206-1631/1000-859",
+                                             "globalAssetId": "https://mm-software.com/ids/assets/2206-1631/1000-859",
                                              "idShort": "2206-1631/1000-859",
-                                             "id": "https://mm.com/ids/aas/2206-1631/1000-859",
+                                             "id": "https://mm-software.com/ids/aas/2206-1631/1000-859",
                                              "specificAssetIds": []
                                            }
                                            ]
