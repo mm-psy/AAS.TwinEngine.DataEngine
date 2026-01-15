@@ -89,7 +89,7 @@ public static class ProviderTestData
                                                                    "contentType": "image/jpeg",
                                                                    "path": "http://localhost/fileprovider/k.jpg"
                                                                },
-                                                               "globalAssetId": "https://mm.de/shell/1"
+                                                               "globalAssetId": "https://mm-software.de/shell/1"
                                                            }
                                                            """;
 

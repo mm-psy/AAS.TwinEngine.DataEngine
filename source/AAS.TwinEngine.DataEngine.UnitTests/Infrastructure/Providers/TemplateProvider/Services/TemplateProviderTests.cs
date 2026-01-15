@@ -269,7 +269,7 @@ public class TemplateProviderTests
         var result = await _sut.GetAssetInformationTemplateAsync(TemplateId, CancellationToken.None);
 
         Assert.NotNull(result);
-        Assert.Equal("https://mm.de/shell/1", result.GlobalAssetId);
+        Assert.Equal("https://mm-software.de/shell/1", result.GlobalAssetId);
     }
 
     [Fact]
