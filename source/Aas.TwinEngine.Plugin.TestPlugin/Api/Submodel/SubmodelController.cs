@@ -14,11 +14,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aas.TwinEngine.Plugin.TestPlugin.Api.Submodel;
 
 [ApiController]
-[Route("data")]
+[Route("")]
 [ApiVersion(1)]
 public class SubmodelController(ISubmodelHandler submodelHandler) : ControllerBase
 {
-    [HttpPost("/{submodelId}")]
+    [HttpPost("data/{submodelId}")]
     [ProducesResponseType(typeof(JsonObject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ActionResult), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ActionResult), StatusCodes.Status400BadRequest)]

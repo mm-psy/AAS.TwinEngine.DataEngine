@@ -3,9 +3,9 @@ networks:
     name: dataengine-network
 
 services:
-  nginx1:
+  nginx:
     image: nginx:latest
-    container_name: nginx1
+    container_name: nginx
     ports:
       - "8080:80"
     volumes:
@@ -25,7 +25,7 @@ services:
   twinengine-dataengine:
     build:
       context: ../../
-      dockerfile: ../../AAS.TwinEngine.DataEngine/Dockerfile
+      dockerfile: ./AAS.TwinEngine.DataEngine/Dockerfile
     image: twinengine-dataengine:latest
     ports:
     - '8085:8080'
@@ -70,7 +70,7 @@ services:
   twinengine-plugin:
     build:
       context: ../../
-      dockerfile: ../../Aas.TwinEngine.Plugin.TestPlugin/Dockerfile
+      dockerfile: ./Aas.TwinEngine.Plugin.TestPlugin/Dockerfile
     image: twinengine-plugin:latest
     ports:
     - '8086:8080'
