@@ -9,7 +9,7 @@ namespace Aas.TwinEngine.Plugin.TestPlugin;
 
 public static class Program
 {
-    private const double ApiVersion = 1.0;
+    private static readonly Version ApiVersion = new(1, 0);
     private const string ApiTitle = "TestPlugin API";
 
     public static async Task Main(string[] args)
