@@ -1,0 +1,38 @@
+[
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-001",
+    "idShort": "M&M01",
+    "id": "https://mm-software.com/ids/aas/000-001",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://cdn.pixabay.com/photo/2023/06/06/16/10/computer-8045026_1280.jpg"
+      }
+    }
+  },
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-002",
+    "idShort": "M&M02",
+    "id": "https://mm-software.com/ids/aas/000-002",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://cdn.pixabay.com/photo/2023/07/08/07/25/ai-generated-8113887_1280.jpg"
+      }
+    }
+  },
+  {
+    "globalAssetId": "https://mm-software.com/ids/assets/000-003",
+    "idShort": "M&M03",
+    "id": "https://mm-software.com/ids/aas/000-003",
+    "specificAssetIds": [],
+    "assetInformationData": {
+      "defaultThumbnail": {
+        "contentType": "image/jpeg",
+        "path": "https://images.pexels.com/photos/27934787/pexels-photo-27934787.jpeg"
+      }
+    }
+  }
+]

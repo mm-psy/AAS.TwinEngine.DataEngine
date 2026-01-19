@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Infrastructure;
+﻿using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Infrastructure;
 using AAS.TwinEngine.DataEngine.Infrastructure.Monitoring;
 using AAS.TwinEngine.DataEngine.Infrastructure.Providers.PluginDataProvider.Services;
 using AAS.TwinEngine.DataEngine.ServiceConfiguration;
