@@ -4,7 +4,7 @@ networks:
 
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:trixie-perl
     container_name: nginx
     ports:
       - "8080:80"
@@ -139,7 +139,7 @@ services:
       - twinengine-network
 
   shell-template-creator:
-    image: curlimages/curl:latest
+    image: curlimages/curl:8.18.0
     container_name: shell-template-creator
     depends_on:
       template-repository:

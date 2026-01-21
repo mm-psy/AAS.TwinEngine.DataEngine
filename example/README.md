@@ -1,12 +1,12 @@
 # TwinEngine Demonstrator Setup
 
-## 📋 Overview
+## Overview
 
 This folder provides a complete, containerized setup to demonstrate how **TwinEngine.DataEngine** can be integrated and run locally. It creates a fully functional environment for managing Asset Administration Shells (AAS), submodels, and related digital asset components using Docker Compose.
 
 The setup includes a complete tech stack with services for AAS registry, repository, submodel management, data persistence, UI access, and a plugin system—all orchestrated through Docker containers on a shared network.
 
-## ✨ Included Submodel Templates
+## Included Submodel Templates
 
 This example includes 5 standardized submodel templates from the **Digital Product Passport for Industry 4.0**:
 
@@ -16,7 +16,7 @@ This example includes 5 standardized submodel templates from the **Digital Produ
 - **CarbonFootprint** 
 - **HandoverDocumentation** 
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -52,21 +52,12 @@ cd AAS.TwinEngine.DataEngine\example
    http://localhost:8080/aas-ui/
    ```
 
-4. **Access PGAdmin for Database Management (Optional):**
-   To view and manage the PostgreSQL database directly:
-   ```
-   http://localhost:8081
-   ```
-   - **Email:** admin@example.com
-   - **Password:** admin
-   - **Add Server:** hostname=postgres, username=postgres, password=admin
-
-5. **Stop all services:**
+4. **Stop all services:**
    ```bash
    docker-compose down
    ```
 
-## 🏗️ Architecture & Services
+## Architecture & Services
 
 The docker-compose setup includes the following services, all running on a shared `twinengine-network`:
 
@@ -90,37 +81,7 @@ The docker-compose setup includes the following services, all running on a share
 | **pgadmin** | 8081 | `dpage/pgadmin4:latest` | Web UI for managing PostgreSQL database |
 | **mongo** | - | `mongo:6.0` | NoSQL database for registry metadata |
 
-## Configuration
-
-### PostgreSQL Database (Plugin)
-
-If desired, you can edit credentials in `docker-compose.yml`:
-```yaml
-POSTGRES_PASSWORD: admin 
-```
-
-Update plugin connection string to match. Edit `example/postgres/init.sql` for custom schema/data.
-
-**Using an External Database:**  
-To use your own database instead:
-1. Change `RelationalDatabaseConfiguration__ConnectionString` in the plugin service environment variables
-2. Remove the postgres container from `docker-compose.yml`
-
-**Database Initialization:**  
-The initial database script is located in `postgres/init.sql`. Modify this file as needed for your requirements.
-
-**Security and Production Notice**
-
-Change all default passwords before any use beyond local development. Default credentials (postgres: admin) are for **development** only.
-
-In production, hosting and managing the PostgreSQL database is the customer's responsibility, not the DataEngine's. Use a managed or self-hosted, production-grade PostgreSQL instance and configure the plugin connection string accordingly.
-
-
-### Port Changes
-
-Modify port mappings in `docker-compose.yml`. Update corresponding environment variables in affected services.
-
-## 🛠️ Creating/Changing Your AAS-Data
+## Creating/Changing Your AAS-Data
 
 ### Using PGAdmin
 
@@ -152,8 +113,47 @@ PGAdmin provides a web-based interface to manage the PostgreSQL database without
 - Updates to application data (e.g., shell records, submodels, submodel element values) are reflected in what the Plugin serves.
 - Submodel and shell templates are managed by BaSyx services and are not modified via PostgreSQL.
 
+--
 
-## 🐛 Troubleshooting
+## Additional Notes
+
+### PostgreSQL Database (Plugin)
+
+If desired, you can edit credentials in `docker-compose.yml`:
+```yaml
+POSTGRES_PASSWORD: admin 
+```
+
+Update plugin connection string to match. Edit `example/postgres/init.sql` for custom schema/data.
+
+**Using an External Database:**  
+To use your own database instead:
+1. Change `RelationalDatabaseConfiguration__ConnectionString` in the plugin service environment variables
+2. Remove the postgres container from `docker-compose.yml`
+
+**Database Initialization:**  
+The initial database script is located in `postgres/init.sql`. Modify this file as needed for your requirements.
+
+**Security and Production Notice**
+
+Change all default passwords before any use beyond local development. Default credentials (postgres: admin) are for **development** only.
+
+In production, hosting and managing the PostgreSQL database is the customer's responsibility, not the DataEngine's. Use a managed or self-hosted, production-grade PostgreSQL instance and configure the plugin connection string accordingly.
+
+
+### Port Changes
+
+Modify port mappings in `docker-compose.yml`. Update corresponding environment variables in affected services.
+
+### Security Note
+
+**Change default passwords before any use beyond local development.** Default credentials (postgres: admin) are for development only.
+
+In production: use a secure API gateway (Azure API Management, AWS API Gateway, Kong), and manage database security (encryption, access control, backups) is a customer responsibility.
+*Do not use this Docker Compose configuration in production.*
+---
+
+## Troubleshooting
 
 **UI not loading:** `docker-compose logs nginx` - Verify ports 8080-8086 are available.
 
@@ -165,13 +165,8 @@ PGAdmin provides a web-based interface to manage the PostgreSQL database without
 
 **PGAdmin not accessible:** Verify the postgres service is healthy with `docker-compose ps`. Check port mappings are correctly configured.
 
-## Security Note
 
-⚠️ **Change default passwords before any use beyond local development.** Default credentials (postgres: admin) are for development only.
 
-**Never use this Docker Compose configuration in production.**
+## Additional Resources
 
-## 📚 Additional Resources
-
-- [TwinEngine Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine)
-- [DPP-Plugin Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.Plugin.DPP)
+- [TwinEngine Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/wiki)
