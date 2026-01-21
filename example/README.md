@@ -120,5 +120,3 @@ Modify port mappings in `docker-compose.yml`. Update corresponding environment v
 
 - [TwinEngine Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine)
 - [DPP-Plugin Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.Plugin.DPP)
-
-*Note: To run DataEngine locally without containers, [see the configuration guide](https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/wiki).*
