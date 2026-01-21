@@ -46,7 +46,7 @@ Before starting , run twinengine environmnet with dpp-plugin.
 
 1. Open Bruno
 2. `Collection -> Open Collection` and choose the Bruno collection folder (`apiCollection`) from the AasTwin.DataEngine repository
-3. From the top-right environment dropdown select an environment: `Local` or `Dev` (use `Local` for local testing)
+3. From the top-right environment dropdown select an environment: `local`
 4. Expand folders to find requests, select a request and click **Send**
 5. Inspect the request/response in the right panel
 
