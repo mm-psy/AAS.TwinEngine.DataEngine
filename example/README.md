@@ -26,6 +26,7 @@ Before running the demonstrator, ensure you have installed:
 - **Docker Compose** (v1.29+) — Usually included with Docker Desktop
 - **Available Ports** — The following ports must be available on your machine:
   - `8080` — Main API Gateway (nginx)
+  - `8081` - PGAdmin 
 
 ### Running the Setup
 
@@ -51,7 +52,16 @@ cd AAS.TwinEngine.DataEngine\example
    http://localhost:8080/aas-ui/
    ```
 
-4. **Stop all services:**
+4. **Access PGAdmin for Database Management (Optional):**
+   To view and manage the PostgreSQL database directly:
+   ```
+   http://localhost:8081
+   ```
+   - **Email:** admin@example.com
+   - **Password:** admin
+   - **Add Server:** hostname=postgres, username=postgres, password=admin
+
+5. **Stop all services:**
    ```bash
    docker-compose down
    ```
@@ -63,7 +73,7 @@ The docker-compose setup includes the following services, all running on a share
 ### Core Services
 
 | Service | Port | Image | Purpose |
-|---------|------|-------|---------|
+|---------|------|-------|----------|
 | **nginx** | 8080 | `nginx:latest` | API Gateway & Web UI proxy |
 | **twinengine-dataengine** | - | `ghcr.io/aas-twinengine/dataengine:latest` | Main TwinEngine DataEngine service |
 | **template-repository** | - | `eclipsebasyx/aas-environment:2.0.0-SNAPSHOT` | AAS Environment & Submodel repository |
@@ -74,10 +84,11 @@ The docker-compose setup includes the following services, all running on a share
 
 ### Infrastructure Services
 
-| Service | Image | Purpose |
-|---------|-------|---------|
-| **postgres** | `postgres:16-alpine` | Relational database for plugin data |
-| **mongo** | `mongo:6.0` | NoSQL database for registry metadata |
+| Service | Port | Image | Purpose |
+|---------|------|-------|----------|
+| **postgres** | - | `postgres:16-alpine` | Relational database for plugin data |
+| **pgadmin** | 8081 | `dpage/pgadmin4:latest` | Web UI for managing PostgreSQL database |
+| **mongo** | - | `mongo:6.0` | NoSQL database for registry metadata |
 
 ## Configuration
 
@@ -98,11 +109,51 @@ To use your own database instead:
 **Database Initialization:**  
 The initial database script is located in `postgres/init.sql`. Modify this file as needed for your requirements.
 
+**Security and Production Notice**
+
+Change all default passwords before any use beyond local development. Default credentials (postgres: admin) are for **development** only.
+
+In production, hosting and managing the PostgreSQL database is the customer's responsibility, not the DataEngine's. Use a managed or self-hosted, production-grade PostgreSQL instance and configure the plugin connection string accordingly.
+
+
 ### Port Changes
 
 Modify port mappings in `docker-compose.yml`. Update corresponding environment variables in affected services.
 
-## Troubleshooting
+## 🛠️ Creating/Changing Your AAS-Data
+
+### Using PGAdmin
+
+PGAdmin provides a web-based interface to manage the PostgreSQL database without writing SQL queries.
+
+**Access PGAdmin:**
+1. Navigate to `http://localhost:8081`
+2. Login with:
+   - **Email:** admin@example.com
+   - **Password:** admin
+
+**Connect to PostgreSQL Server:**
+1. In PGAdmin, click **"Add New Server"**
+2. Fill in the connection details:
+   - **Name:** twinengine
+   - **Host name:** postgres
+   - **Port:** 5432
+   - **Username:** postgres
+   - **Password:** admin
+   - **Database:** twinengine
+3. Click **"Save"**
+
+**Browse and Modify Data:**
+- In the left sidebar, navigate to: **Servers → twinengine → Databases → twinengine → Schemas → public → Tables**
+- Right-click any table and select **"View/Edit Data"** to manage records
+- Create new records or modify existing ones directly through the UI
+
+**How changes affect the Plugin:**
+- Updates to application data (e.g., shell records, submodels, submodel element values) are reflected in what the Plugin serves.
+- Submodel and shell templates are managed by BaSyx services and are not modified via PostgreSQL.
+
+
+## 🐛 Troubleshooting
 
 **UI not loading:** `docker-compose logs nginx` - Verify ports 8080-8086 are available.
 
@@ -112,9 +163,13 @@ Modify port mappings in `docker-compose.yml`. Update corresponding environment v
 
 **Database errors:** Check `docker-compose ps` for health status. Verify connection strings match credentials.
 
+**PGAdmin not accessible:** Verify the postgres service is healthy with `docker-compose ps`. Check port mappings are correctly configured.
+
 ## Security Note
 
-⚠️ **Change default passwords before production.** Default credentials (postgres: admin) are for development only.
+⚠️ **Change default passwords before any use beyond local development.** Default credentials (postgres: admin) are for development only.
+
+**Never use this Docker Compose configuration in production.**
 
 ## 📚 Additional Resources
 
