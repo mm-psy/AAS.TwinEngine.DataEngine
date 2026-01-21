@@ -26,13 +26,6 @@ Before running the demonstrator, ensure you have installed:
 - **Docker Compose** (v1.29+) — Usually included with Docker Desktop
 - **Available Ports** — The following ports must be available on your machine:
   - `8080` — Main API Gateway (nginx)
-  - `8081` — AAS Environment Repository
-  - `8082` — AAS Registry
-  - `8083` — Submodel Registry
-  - `8085` — TwinEngine DataEngine
-  - `8086` — Plugin DPP
-  - `5432` — PostgreSQL Database
-  - `27017` — MongoDB Database
 
 ### Running the Setup
 
@@ -41,6 +34,11 @@ Before running the demonstrator, ensure you have installed:
    git clone https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine.git
    cd AAS.TwinEngine.DataEngine
    ```
+2. **Go Inside example Folder**
+
+```bash
+cd AAS.TwinEngine.DataEngine\example
+```
 
 2. **Start all services:**
    ```bash
@@ -67,19 +65,19 @@ The docker-compose setup includes the following services, all running on a share
 | Service | Port | Image | Purpose |
 |---------|------|-------|---------|
 | **nginx** | 8080 | `nginx:latest` | API Gateway & Web UI proxy |
-| **twinengine-dataengine** | 8085 | `ghcr.io/aas-twinengine/dataengine:latest` | Main TwinEngine DataEngine service |
-| **template-repository** | 8081 | `eclipsebasyx/aas-environment:2.0.0-SNAPSHOT` | AAS Environment & Submodel repository |
-| **aas-template-registry** | 8082 | `eclipsebasyx/aas-registry-log-mongodb:2.0.0-SNAPSHOT` | AAS Shell Descriptor Registry |
-| **sm-template-registry** | 8083 | `eclipsebasyx/submodel-registry-log-mongodb:2.0.0-SNAPSHOT` | Submodel Descriptor Registry |
-| **plugin** | 8086 | `ghcr.io/aas-twinengine/plugindpp:latest` | Digital Product Passport Plugin |
+| **twinengine-dataengine** | - | `ghcr.io/aas-twinengine/dataengine:latest` | Main TwinEngine DataEngine service |
+| **template-repository** | - | `eclipsebasyx/aas-environment:2.0.0-SNAPSHOT` | AAS Environment & Submodel repository |
+| **aas-template-registry** | - | `eclipsebasyx/aas-registry-log-mongodb:2.0.0-SNAPSHOT` | AAS Shell Descriptor Registry |
+| **sm-template-registry** | - | `eclipsebasyx/submodel-registry-log-mongodb:2.0.0-SNAPSHOT` | Submodel Descriptor Registry |
+| **plugin** | - | `ghcr.io/aas-twinengine/plugindpp:latest` | Digital Product Passport Plugin |
 | **aas-web-ui** | — | `eclipsebasyx/aas-gui:SNAPSHOT` | Web User Interface (served via nginx) |
 
 ### Infrastructure Services
 
-| Service | Port | Image | Purpose |
-|---------|------|-------|---------|
-| **postgres** | 5432 | `postgres:16-alpine` | Relational database for plugin data |
-| **mongo** | 27017 | `mongo:6.0` | NoSQL database for registry metadata |
+| Service | Image | Purpose |
+|---------|-------|---------|
+| **postgres** | `postgres:16-alpine` | Relational database for plugin data |
+| **mongo** | `mongo:6.0` | NoSQL database for registry metadata |
 
 ## Configuration
 
@@ -123,3 +121,4 @@ Modify port mappings in `docker-compose.yml`. Update corresponding environment v
 - [TwinEngine Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine)
 - [DPP-Plugin Documentation](https://github.com/AAS-TwinEngine/AAS.TwinEngine.Plugin.DPP)
 
+*Note: To run DataEngine locally without containers, [see the configuration guide](https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/wiki).*

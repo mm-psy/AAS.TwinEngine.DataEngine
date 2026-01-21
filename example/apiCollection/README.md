@@ -12,7 +12,7 @@ This directory contains the Bruno collection and instructions to test the **AAS.
 |--------------------------|-----------------------------------------------------|
 | **API**                  | `AAS.TwinEngine.DataEngine` (.NET)                  |
 | **Testing Tool**         | [Bruno](https://www.usebruno.com/downloads)         |
-| **Default API URL**      | `https://localhost:5059`                            |
+| **Default API URL**      | `http://localhost:8080`                            |
 | **SDK Required**         | .NET 8 (recommended)                                |
 | **Run docker compose file**           |  Run `docker-compose-up` [form AasTwin.DataEngine](../README.md)                |
 
@@ -41,18 +41,6 @@ This directory contains the Bruno collection and instructions to test the **AAS.
 Before starting , run twinengine environmnet with dpp-plugin.
 [click here for getting starated with docker-compose](../README.md)
 
-### 2. Start the DataEngine .NET API
-
-Run the API:
-
-```bash
-cd source\AAS.TwinEngine.DataEngine
-dotnet run
-```
-
-By default the API listens at `https://localhost:5059` unless overridden by environment settings or `launchSettings.json`.
-
----
 
 ## Bruno Collection — Quick Start
 
