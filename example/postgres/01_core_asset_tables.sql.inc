@@ -83,7 +83,7 @@ INSERT INTO "Asset" (
  'https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/product2.jpg',
  'https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/product2.jpg',
  'FM-ABC-1235','FMABC1238','FM11-ABC22-123458','9804821',2023,'2023-01-01',
- '1.0.1','1.0.1','1.0.1','IN','123567890','M&M Software mainment Center India',
+ '1.0.1','1.0.1','1.0.1','IN','123567890','M&M India',
  'FM-ABC-123','ABC-123','Camera','Kamera','Electronics','Elektronik',
  'https://mmsoftwaregmbh.sharepoint.com/_api/siteiconmanager/getsitelogo?type=%271%27&hash=638518734598723853',
  '123456','EEA-EX-200-S/47-Q4',
