@@ -175,7 +175,7 @@ INSERT INTO "DocumentVersion" (
  'Detailed instructions for operating the X100 DSLR camera, including setup and troubleshooting.','Detaillierte Anweisungen zur Bedienung der DSLR-Kamera X100, einschließlich Einrichtung und Fehlerbehebung',
  'DSLR, Camera, Photography, User Guide, Setup','DSLR, Kamera, Fotografie, Benutzerhandbuch, Einrichtung','preview-ribbon-isolated-transparent-background-395176472.jpg (800×291)'),
 
-(1,'en','https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/dummy_document.pdf','1.1','2024-05-05','InReview','M&M','M&M Software mainment Center India',
+(1,'en','https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/dummy_document.pdf','1.1','2024-05-05','InReview','M&M','M&M India',
  'Technical Specification – Mirrorless Camera Z-Series','Technische Spezifikation – Systemkamera der Z-Serie','Detailed Specs for Advanced Imaging','Detaillierte Spezifikationen für fortschrittliche Bildgebung',
  'Comprehensive technical details of the Z-Series mirrorless camera, covering sensor and performance.','Umfassende technische Details der spiegellosen Kamera Z-Serie, einschließlich Sensor und Leistung.','Mirrorless, Camera, Specs, Imaging, Performance','Spiegellos, Kamera, Spezifikationen, Bildgebung, Leistung','preview-ribbon-isolated-transparent-background-395176472.jpg (800×291)'),
 
@@ -187,7 +187,7 @@ INSERT INTO "DocumentVersion" (
  'Installation Guide – Wide-Angle Lens Kit','Installationsanleitung – Weitwinkel-Objektiv-Kit','Step-by-Step Setup Instructions','Schritt-für-Schritt-Installationsanleitung',
  'Step-by-step instructions for installing and configuring the wide-angle lens kit.','Schritt-für-Schritt-Anleitung zur Installation und Konfiguration des Weitwinkel-Objektivsets.','Wide-Angle, Lens, Installation, Setup, Kit','Weitwinkel, Objektiv, Installation, Einrichtung, Set','preview-ribbon-isolated-transparent-background-395176472.jpg (800×291)'),
 
-(0,'en','https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/dummy_document.pdf','0.9','2024-01-01','Released','M&M','M&M Software mainment Center India',
+(0,'en','https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/dummy_document.pdf','0.9','2024-01-01','Released','M&M','M&M India',
  'Product Data Sheet – Telephoto Lens 200mm','Produktdatenblatt – Teleobjektiv 200 mm','Technical Data and Performance Metrics','Technische Daten und Leistungskennzahlen',
  'Technical data and compatibility details for the 200mm telephoto lens.','Technische Daten und Kompatibilitätsdetails für das 200-mm-Teleobjektiv.','Telephoto, Lens, Data Sheet, Specifications, Optics','Teleobjektiv, Objektiv, Datenblatt, Spezifikationen, Optik','preview-ribbon-isolated-transparent-background-395176472.jpg (800×291)'),
 
@@ -199,7 +199,7 @@ INSERT INTO "DocumentVersion" (
  'Perfume Catalog – Luxury Fragrance Collection 2025','Parfümkatalog – Luxusduftkollektion 2025','Explore Elegant Scents for Every Occasion','Entdecken Sie elegante Düfte für jeden Anlass',
  'A curated catalog showcasing premium perfumes with scent profiles and packaging details.','Ein kuratierter Katalog mit Premium-Parfums, Duftprofilen und Verpackungsdetails.','Perfume, Fragrance, Luxury, Catalog, Collection','Parfum, Duft, Luxus, Katalog, Kollektion','preview-ribbon-isolated-transparent-background-395176472.jpg (800×291)'),
 
-(2,'en','https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/dummy_document.pdf','2','2024-03-03','InReview','M&M','M&M Software mainment Center India',
+(2,'en','https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/blob/main/example/data/dummy_document.pdf','2','2024-03-03','InReview','M&M','M&M India',
  'Quality Assurance Report – Eau de Parfum Series A','Qualitätssicherungsbericht – Eau de Parfum Serie A','Verified Standards and Testing Results','Geprüfte Standards und Testergebnisse',
  'Report detailing quality checks and compliance standards for Series A perfumes.','Bericht mit Qualitätsprüfungen und Konformitätsstandards für Parfums der Serie A.','Packaging, Perfume, Bottles, Caps, Compliance','Verpackung, Parfum, Flaschen, Verschlüsse, Konformität','preview-ribbon-isolated-transparent-background-395176472.jpg (800×291)'),
 
