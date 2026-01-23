@@ -26,7 +26,7 @@ services:
     image: ghcr.io/aas-twinengine/dataengine:1.0.0
     container_name: twinengine-dataengine
     depends_on:
-      plugin:
+      dpp-plugin:
         condition: service_started
     restart: always
     environment:
@@ -63,13 +63,13 @@ services:
       - AasRegistryTimeTrigger__IsPreComputed=false
       - MultiPluginConflictOption__HandlingMode=TakeFirst
       - PluginConfig__Plugins__0__PluginName=Plugin1
-      - PluginConfig__Plugins__0__PluginUrl=http://plugin:8080
+      - PluginConfig__Plugins__0__PluginUrl=http://dpp-plugin:8080
     networks:
       - twinengine-network
 
-  plugin:
+  dpp-plugin:
     image: ghcr.io/aas-twinengine/plugindpp:1.0.0
-    container_name: plugin
+    container_name: dpp-plugin
     depends_on:
       postgres:
         condition: service_healthy
@@ -207,7 +207,7 @@ services:
       - twinengine-network
 
   pgadmin:
-    image: dpage/pgadmin4:latest
+    image: dpage/pgadmin4:snapshot
     container_name: pgadmin
     ports:
       - "8081:80"

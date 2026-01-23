@@ -65,12 +65,12 @@ The docker-compose setup includes the following services, all running on a share
 
 | Service | Port | Image | Purpose |
 |---------|------|-------|----------|
-| **nginx** | 8080 | `nginx:latest` | API Gateway & Web UI proxy |
-| **twinengine-dataengine** | - | `ghcr.io/aas-twinengine/dataengine:latest` | Main TwinEngine DataEngine service |
+| **nginx** | 8080 | `nginx:trixie-perl` | API Gateway & Web UI proxy |
+| **twinengine-dataengine** | - | `ghcr.io/aas-twinengine/dataengine:1.0.0` | Main TwinEngine DataEngine service |
 | **template-repository** | - | `eclipsebasyx/aas-environment:2.0.0-SNAPSHOT` | AAS Environment & Submodel repository |
 | **aas-template-registry** | - | `eclipsebasyx/aas-registry-log-mongodb:2.0.0-SNAPSHOT` | AAS Shell Descriptor Registry |
 | **sm-template-registry** | - | `eclipsebasyx/submodel-registry-log-mongodb:2.0.0-SNAPSHOT` | Submodel Descriptor Registry |
-| **plugin** | - | `ghcr.io/aas-twinengine/plugindpp:latest` | Digital Product Passport Plugin |
+| **plugin** | - | `ghcr.io/aas-twinengine/plugindpp:1.0.0` | Digital Product Passport Plugin |
 | **aas-web-ui** | — | `eclipsebasyx/aas-gui:SNAPSHOT` | Web User Interface (served via nginx) |
 
 ### Infrastructure Services
@@ -78,7 +78,7 @@ The docker-compose setup includes the following services, all running on a share
 | Service | Port | Image | Purpose |
 |---------|------|-------|----------|
 | **postgres** | - | `postgres:16-alpine` | Relational database for plugin data |
-| **pgadmin** | 8081 | `dpage/pgadmin4:latest` | Web UI for managing PostgreSQL database |
+| **pgadmin** | 8081 | `dpage/pgadmin4:snapshot` | Web UI for managing PostgreSQL database |
 | **mongo** | - | `mongo:6.0` | NoSQL database for registry metadata |
 
 ## Creating/Changing Your AAS-Data
