@@ -8,6 +8,12 @@ updates:
   - package-ecosystem: "nuget"
     target-branch: "develop"
     directory: "/source"
+    groups:
+      minor-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
     schedule:
       interval: "weekly"
     cooldown:
@@ -22,6 +28,13 @@ updates:
   - package-ecosystem: "github-actions"
     target-branch: "develop"
     directory: "/"
+    groups:
+      major-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
     schedule:
       interval: "weekly"
     cooldown:
