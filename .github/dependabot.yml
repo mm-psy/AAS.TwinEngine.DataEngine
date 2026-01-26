@@ -22,7 +22,7 @@ updates:
 
   - package-ecosystem: "docker"
     target-branch: "develop"
-    directory: "/source/AAS.TwinEngine.Plugin.RelationalDatabase"
+    directory: "/source/AAS.TwinEngine.DataEngine"
     groups:
       major-minor-patch:
         applies-to: version-updates
