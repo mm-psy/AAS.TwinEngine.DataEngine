@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          dry-run: true
+          # dry-run: true
           package: dataengine
           delete-untagged: true
           delete-tags: manual**
