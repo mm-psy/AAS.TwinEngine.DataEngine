@@ -9,10 +9,13 @@ updates:
     target-branch: "develop"
     directory: "/source"
     groups:
-      minor-patch:
+      minor:
         applies-to: version-updates
         update-types:
           - "minor"
+      patch:
+        applies-to: version-updates
+        update-types:
           - "patch"
     schedule:
       interval: "weekly"
