@@ -17,4 +17,4 @@ jobs:
           package: dataengine
           exclude-tags: v**, rc-release**, hotfix**
           delete-untagged: true
-          older-than: 90 days
+          older-than: 1 days
