@@ -89,7 +89,7 @@ public static class ProviderTestData
                                                                    "contentType": "image/jpeg",
                                                                    "path": "http://localhost/fileprovider/k.jpg"
                                                                },
-                                                               "globalAssetId": "https://sew-eurodrive.de/shell/1"
+                                                               "globalAssetId": "https://mm-software.de/shell/1"
                                                            }
                                                            """;
 
@@ -118,9 +118,9 @@ public static class ProviderTestData
                                              "specificAssetIds": []
                                            },
                                            {
-                                             "globalAssetId": "https://wago.com/ids/assets/2206-1631/1000-859",
+                                             "globalAssetId": "https://mm-software.com/ids/assets/2206-1631/1000-859",
                                              "idShort": "2206-1631/1000-859",
-                                             "id": "https://wago.com/ids/aas/2206-1631/1000-859",
+                                             "id": "https://mm-software.com/ids/aas/2206-1631/1000-859",
                                              "specificAssetIds": []
                                            }
                                            ]
