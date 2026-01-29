@@ -71,7 +71,7 @@ jobs:
             latest=false
           tags: |
             type=semver,pattern={{raw}}
-            type=raw,value=develop-{{sha}},enable=${{startsWith(github.ref,'refs/heads/develop')}}
+            type=raw,value=develop-{{sha}},enable=${{startsWith(github.ref,'refs/heads/develop')}},priority=201
             type=raw,value=develop,enable=${{startsWith(github.ref,'refs/heads/develop')}}
             type=raw,value=rc-{{branch}}-{{sha}},enable=${{startsWith(github.ref,'refs/heads/release/')}}
             type=raw,value={{branch}}-{{sha}},enable=${{!startsWith(github.ref,'refs/heads/develop') && !startsWith(github.ref,'refs/heads/release/')}}
