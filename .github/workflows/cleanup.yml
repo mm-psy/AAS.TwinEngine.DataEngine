@@ -11,11 +11,10 @@ jobs:
     permissions:
       packages: write
     steps:
-      - uses: dataaxiom/ghcr-cleanup-action@v1
+      - uses: dataaxiom/ghcr-cleanup-action@cd0cdb900b5dbf3a6f2cc869f0dbb0b8211f50c4 # v1.0.16
         with:
-          # dry-run: true
+          dry-run: true
           package: dataengine
           delete-untagged: true
-          delete-tags: manual**
           exclude-tags: v**, rc-release**, hotfix**
           older-than: 1 days
