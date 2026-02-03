@@ -16,5 +16,5 @@ jobs:
           dry-run: true
           package: dataengine
           delete-untagged: true
-          exclude-tags: v**, rc-release**, hotfix**
-          older-than: 1 days
+          exclude-tags: v**
+          older-than: 30 days
