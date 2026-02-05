@@ -19,7 +19,6 @@ jobs:
         id: debug
         run: |
             echo "🔍 Debugging PR Validator Workflow"    
-            #echo ${{ toJson(github) }}
 
       - name: Check if PR is linked to an issue
         id: check-linked-issue
