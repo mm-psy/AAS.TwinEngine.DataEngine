@@ -107,10 +107,10 @@ jobs:
                   nodes {
                     fieldValues(first: 10) {
                       nodes {
-                        field {
-                          name
-                        }
                         ... on ProjectV2ItemFieldSingleSelectValue {
+                          field {
+                            name
+                          }
                           name
                         }
                       }
