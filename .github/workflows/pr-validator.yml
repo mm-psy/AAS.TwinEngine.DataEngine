@@ -18,165 +18,20 @@ jobs:
       - name: Debug
         id: debug
         run: |
-            echo "🔍 Debugging PR Validator Workflow"    
+            echo "Debugging PR Validator Workflow"    
 
       - name: Check if PR is linked to an issue
         id: check-linked-issue
-        continue-on-error: true
         run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
           PR_issue_url="${{ github.event.pull_request.issue_url }}"
-          echo "PR issue url: $PR_issue_url"
-
-    #   - name: Check if PR is linked to an issue
-    #     id: check-linked-issue
-    #     run: |
-    #       PR_NUMBER=${{ github.event.pull_request.number }}
-    #       PR_BODY="${{ github.event.pull_request.body }}"
-          
-    #       echo "🔍 Checking if PR #$PR_NUMBER is linked to an issue..."
-          
-    #       # Look for issue links in PR body
-    #       # Patterns: closes #123, fixes #123, resolves #123, etc.
-    #       ISSUE_NUMBER=$(echo "$PR_BODY" | grep -oiE '(closes|fixes|resolves|relates to)[[:space:]]*#[0-9]+' | grep -oE '[0-9]+' | head -1)
-          
-    #       # Also check for just #number pattern
-    #       if [[ -z "$ISSUE_NUMBER" ]]; then
-    #         ISSUE_NUMBER=$(echo "$PR_BODY" | grep -oE '#[0-9]+' | head -1 | sed 's/#//')
-    #       fi
-          
-    #       if [[ -z "$ISSUE_NUMBER" ]]; then
-    #         echo ""
-    #         echo "❌ ERROR: No linked issue found in PR #$PR_NUMBER"
-    #         echo ""
-    #         echo "📝 Please link an issue by adding one of these to your PR description:"
-    #         echo "   - closes #<issue-number>"
-    #         echo "   - fixes #<issue-number>"
-    #         echo "   - resolves #<issue-number>"
-    #         echo ""
-    #         echo "Example:"
-    #         echo "   This PR implements the new feature."
-    #         echo "   Closes #123"
-    #         exit 1
-    #       fi
-          
-    #       # Verify the issue exists
-    #       ISSUE_VERIFY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-    #         "https://api.github.com/repos/${{ github.repository }}/issues/$ISSUE_NUMBER")
-          
-    #       ISSUE_STATE=$(echo "$ISSUE_VERIFY" | jq -r '.state // empty')
-          
-    #       if [[ -z "$ISSUE_STATE" ]]; then
-    #         echo "❌ ERROR: Issue #$ISSUE_NUMBER not found in repository"
-    #         exit 1
-    #       fi
-          
-    #       echo "✅ PR #$PR_NUMBER is linked to issue #$ISSUE_NUMBER"
-    #       echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
-
-    #   - name: Check if issue requires test cases
-    #     id: check-test-case-attribute
-    #     run: |
-    #       ISSUE_NUMBER=${{ steps.check-linked-issue.outputs.issue_number }}
-          
-    #       echo "🔍 Checking if issue #$ISSUE_NUMBER requires test cases..."
-          
-    #       # Get issue details
-    #       ISSUE_RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-    #         "https://api.github.com/repos/${{ github.repository }}/issues/$ISSUE_NUMBER")
-          
-    #       # Check issue labels
-    #       LABELS=$(echo "$ISSUE_RESPONSE" | jq -r '.labels[].name' | tr '\n' '|')
-          
-    #       TEST_CASE_REQUIRED="false"
-          
-    #       # Check for test case required label
-    #       if [[ "$LABELS" == *"test-case-required"* ]]; then
-    #         TEST_CASE_REQUIRED="true"
-    #         echo "✅ Issue #$ISSUE_NUMBER has label: test-case-required"
-    #       elif [[ "$LABELS" == *"no-test-case-required"* ]]; then
-    #         TEST_CASE_REQUIRED="false"
-    #         echo "✅ Issue #$ISSUE_NUMBER has label: no-test-case-required"
-    #       else
-    #         echo "ℹ️  Issue #$ISSUE_NUMBER does not have explicit test case label"
-    #         echo "   Defaulting to: test cases are NOT required"
-    #         TEST_CASE_REQUIRED="false"
-    #       fi
-          
-    #       echo "test_case_required=$TEST_CASE_REQUIRED" >> $GITHUB_OUTPUT
-
-    #   - name: Check QA approval if test case required
-    #     id: check-qa-approval
-    #     if: steps.check-test-case-attribute.outputs.test_case_required == 'true'
-    #     run: |
-    #       PR_NUMBER=${{ github.event.pull_request.number }}
-          
-    #       echo "🔍 Checking for QA approval on PR #$PR_NUMBER..."
-          
-    #       # Get QA team slug from repository variable or use default
-    #       QA_TEAM_SLUG="${{ vars.QA_TEAM_SLUG || 'qa-team' }}"
-          
-    #       # Get team members
-    #       echo "📋 Fetching QA team members from: $QA_TEAM_SLUG"
-          
-    #       TEAM_RESPONSE=$(curl -s \
-    #         -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-    #         -H "Accept: application/vnd.github+json" \
-    #         "https://api.github.com/orgs/${{ github.repository_owner }}/teams/$QA_TEAM_SLUG/members?per_page=100")
-          
-    #       # Extract team member logins
-    #       QA_MEMBERS=$(echo "$TEAM_RESPONSE" | jq -r '.[].login' 2>/dev/null || true)
-          
-    #       if [[ -z "$QA_MEMBERS" ]]; then
-    #         echo "⚠️  WARNING: Could not fetch QA team members"
-    #         echo "   Team slug: $QA_TEAM_SLUG"
-    #         echo "   Organization: ${{ github.repository_owner }}"
-    #         echo ""
-    #         echo "✅ Skipping QA approval check (team not found)"
-    #         echo "qa_approved=skipped" >> $GITHUB_OUTPUT
-    #         exit 0
-    #       fi
-          
-    #       # Convert to array for easier checking
-    #       QA_MEMBERS_ARRAY=($(echo "$QA_MEMBERS"))
-    #       QA_COUNT=${#QA_MEMBERS_ARRAY[@]}
-          
-    #       echo "   Found $QA_COUNT QA team member(s)"
-          
-    #       # Get all reviews for the PR
-    #       REVIEWS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-    #         "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews?per_page=100")
-          
-    #       # Check for approval from QA members
-    #       APPROVED_BY_QA=""
-    #       while IFS= read -r member; do
-    #         MEMBER_APPROVED=$(echo "$REVIEWS" | jq -r ".[] | select(.state == \"APPROVED\" and .user.login == \"$member\") | .user.login" | head -1)
-    #         if [[ ! -z "$MEMBER_APPROVED" ]]; then
-    #           APPROVED_BY_QA="$MEMBER_APPROVED"
-    #           break
-    #         fi
-    #       done <<< "$QA_MEMBERS"
-          
-    #       if [[ ! -z "$APPROVED_BY_QA" ]]; then
-    #         echo "✅ PR #$PR_NUMBER approved by QA member: @$APPROVED_BY_QA"
-    #         echo "qa_approved=true" >> $GITHUB_OUTPUT
-    #       else
-    #         echo ""
-    #         echo "❌ ERROR: Test cases are required for this PR"
-    #         echo ""
-    #         echo "📋 QA approval is required because this issue has the 'test-case-required' label"
-    #         echo ""
-    #         echo "👥 Please request review from one of the QA team members:"
-    #         for member in "${QA_MEMBERS_ARRAY[@]}"; do
-    #           echo "   - @$member"
-    #         done
-    #         echo ""
-    #         echo "📌 Steps to request review:"
-    #         echo "   1. Click 'Request review' on this PR"
-    #         echo "   2. Select a QA team member"
-    #         echo "   3. Wait for their approval"
-    #         echo ""
-    #         exit 1
-    #       fi
+          if [ -n "$PR_issue_url" ]; then
+            echo "🔗 Linked Issue: $PR_issue_url"
+            echo "::notice title=Linked Issue::[Linked Issue]($PR_issue_url)"
+          else
+            echo "::error title=Missing Linked Issue::This PR is not linked to any issue. Please link an issue to this PR before merging."
+            exit 1
+          fi
 
       - name: All checks passed
         run: |
@@ -184,13 +39,6 @@ jobs:
           echo "================================"
           echo "✅ PR VALIDATION SUCCESS"
           echo "================================"
-          echo ""
-          echo "✓ PR is linked to an issue"
-          echo "✓ Issue attributes verified"
-          # if [[ "${{ steps.check-test-case-attribute.outputs.test_case_required }}" == "true" ]]; then
-          if [[ "true" == "true" ]]; then
-            echo "✓ QA approval confirmed"
-          fi
           echo ""
           echo "This PR is ready for merge!"
           echo ""
