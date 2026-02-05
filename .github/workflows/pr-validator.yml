@@ -26,7 +26,6 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           PR_issue_url="${{ github.event.pull_request.issue_url }}"
           if [ -n "$PR_issue_url" ]; then
-            echo "🔗 Linked Issue: $PR_issue_url"
             echo "::notice title=Linked Issue::[Linked Issue]($PR_issue_url)"
           else
             echo "::error title=Missing Linked Issue::This PR is not linked to any issue. Please link an issue to this PR before merging."
