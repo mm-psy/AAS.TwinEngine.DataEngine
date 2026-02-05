@@ -8,7 +8,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  PROJECT_NAME: "@mm-psy's Testing"
+  PROJECT_NAME: "Testing"
 
 jobs:
   validate-pr:
@@ -133,7 +133,7 @@ jobs:
             -F number="$ISSUE_NUMBER")
           
           # Check if issue is in the required project
-          PROJECT_FOUND=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" '.data.repository.issue.projectItems.nodes[] | select(.project.title == $project)' 2>/dev/null | jq -s 'length > 0')
+          PROJECT_FOUND=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" '[.data.repository.issue.projectItems.nodes[] | select(.project.title == $project)] | length > 0')
           
           if [ "$PROJECT_FOUND" != "true" ]; then
             echo "::endgroup::"
