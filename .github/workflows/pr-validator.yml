@@ -133,9 +133,9 @@ jobs:
             -F number="$ISSUE_NUMBER")
           
           # Check if issue is in the required project
-          PROJECT_FOUND=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" '.data.repository.issue.projectItems.nodes[] | select(.project.title == $project) | .project.title' 2>/dev/null)
+          PROJECT_FOUND=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" '.data.repository.issue.projectItems.nodes[] | select(.project.title == $project)' 2>/dev/null | jq -s 'length > 0')
           
-          if [ -z "$PROJECT_FOUND" ]; then
+          if [ "$PROJECT_FOUND" != "true" ]; then
             echo "::endgroup::"
             echo "::error title=Validation Failed: Issue Not in Required Project::❌ Issue #$ISSUE_NUMBER is not part of the '$PROJECT_NAME' project."
             echo ""
@@ -152,7 +152,7 @@ jobs:
           echo "✅ Issue #$ISSUE_NUMBER is in the '$PROJECT_NAME' project"
           
           # Check TestCaseRequired field
-          TEST_CASE_REQUIRED=$(echo "$ISSUE_RESULT" | jq -r '.data.repository.issue.projectItems.nodes[] | select(.project.title == "'"$PROJECT_NAME"'") | .fieldValuesByName.TestCaseRequired.name // "not-set"')
+          TEST_CASE_REQUIRED=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" -r '.data.repository.issue.projectItems.nodes[] | select(.project.title == $project) | .fieldValuesByName.TestCaseRequired.name // "not-set"' | head -1)
           
           if [ "$TEST_CASE_REQUIRED" = "not-set" ]; then
             echo "::endgroup::"
