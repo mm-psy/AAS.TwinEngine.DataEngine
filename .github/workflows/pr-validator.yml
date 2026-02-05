@@ -8,6 +8,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PROJECT_NAME: "@mm-psy's Testing"
 
 jobs:
   validate-pr:
@@ -64,6 +65,11 @@ jobs:
           if [ "$ISSUE_COUNT" -gt 0 ]; then
             echo "✅ Found $ISSUE_COUNT linked issue(s)"
             echo "$RESULT" | jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[] | "  • Issue #\(.number): \(.title) (\(.url))"'
+            
+            # Extract first issue number for further validation
+            ISSUE_NUMBER=$(echo "$RESULT" | jq '.data.repository.pullRequest.closingIssuesReferences.nodes[0].number')
+            echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+            
             echo "::endgroup::"
             exit 0
           else
@@ -82,7 +88,95 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: PR validation summary
+      - name: Check issue project and custom fields
+        id: check-project-fields
+        run: |
+          ISSUE_NUMBER=${{ steps.check-linked-issue.outputs.issue_number }}
+          OWNER=${{ github.repository_owner }}
+          REPO_NAME=${{ github.event.repository.name }}
+          PROJECT_NAME=${{ env.PROJECT_NAME }}
+          
+          echo "::group::Validating issue project and custom fields"
+          echo "Checking if issue #$ISSUE_NUMBER is in project '$PROJECT_NAME'"
+          
+          # Query issue fields using GraphQL
+          ISSUE_RESULT=$(gh api graphql \
+            -f query='
+              query($owner:String!, $name:String!, $number:Int!) {
+                repository(owner:$owner, name:$name) {
+                  issue(number:$number) {
+                    number
+                    title
+                    projectItems(first: 10) {
+                      nodes {
+                        project {
+                          title
+                        }
+                        fieldValuesByName {
+                          TestCaseRequired {
+                            ... on ProjectV2ItemFieldSingleSelectValue {
+                              name
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ' \
+            -F owner="$OWNER" \
+            -F name="$REPO_NAME" \
+            -F number="$ISSUE_NUMBER")
+          
+          # Check if issue is in the required project
+          PROJECT_FOUND=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" '.data.repository.issue.projectItems.nodes[] | select(.project.title == $project) | .project.title' 2>/dev/null)
+          
+          if [ -z "$PROJECT_FOUND" ]; then
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Issue Not in Required Project::❌ Issue #$ISSUE_NUMBER is not part of the '$PROJECT_NAME' project."
+            echo ""
+            echo "**Why this check failed:**"
+            echo "This repository requires linked issues to be part of the '$PROJECT_NAME' project for proper tracking and organization."
+            echo ""
+            echo "**How to fix it:**"
+            echo "1. Go to issue #$ISSUE_NUMBER"
+            echo "2. Add it to the '$PROJECT_NAME' project from the right sidebar"
+            echo "3. Once added, this validation will pass"
+            exit 1
+          fi
+          
+          echo "✅ Issue #$ISSUE_NUMBER is in the '$PROJECT_NAME' project"
+          
+          # Check TestCaseRequired field
+          TEST_CASE_REQUIRED=$(echo "$ISSUE_RESULT" | jq -r '.data.repository.issue.projectItems.nodes[] | select(.project.title == "'"$PROJECT_NAME"'") | .fieldValuesByName.TestCaseRequired.name // "not-set"')
+          
+          if [ "$TEST_CASE_REQUIRED" = "not-set" ]; then
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Invalid Issue::❌ Issue #$ISSUE_NUMBER does not have the TestCaseRequired field set."
+            echo ""
+            echo "**Why this check failed:**"
+            echo "The TestCaseRequired field is not set on this issue."
+            echo ""
+            echo "**How to fix it:**"
+            echo "1. Create a issue properly linked to the '$PROJECT_NAME' project"
+            echo "2. Make sure the TestCaseRequired field is set (either true or false)"
+            echo "3. Link that issue to your PR"
+            exit 1
+          fi
+          
+          if [ "$TEST_CASE_REQUIRED" = "true" ] || [ "$TEST_CASE_REQUIRED" = "True" ]; then
+            echo "✅ TestCaseRequired is set to: $TEST_CASE_REQUIRED (Test case required for this issue)"
+          elif [ "$TEST_CASE_REQUIRED" = "false" ] || [ "$TEST_CASE_REQUIRED" = "False" ]; then
+            echo "✅ TestCaseRequired is set to: $TEST_CASE_REQUIRED (No test case required for this issue)"
+          fi
+          
+          echo "::endgroup::"
+          exit 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: PR validation Success
         if: success()
         run: |
           echo ""
