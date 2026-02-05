@@ -57,8 +57,7 @@ jobs:
             ' \
             -F owner="$OWNER" \
             -F name="$REPO_NAME" \
-            -F number="$PR_NUMBER" \
-            -r)
+            -F number="$PR_NUMBER")
           
           # Extract issue information
           ISSUE_COUNT=$(echo "$RESULT" | jq '.data.repository.pullRequest.closingIssuesReferences.totalCount')
