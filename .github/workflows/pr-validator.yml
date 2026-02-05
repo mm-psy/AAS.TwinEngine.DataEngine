@@ -88,29 +88,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check issue project and custom fields
+      - name: Check custom field values
         id: check-project-fields
         run: |
           ISSUE_NUMBER=${{ steps.check-linked-issue.outputs.issue_number }}
           OWNER=${{ github.repository_owner }}
           REPO_NAME=${{ github.event.repository.name }}
-          PROJECT_NAME=${{ env.PROJECT_NAME }}
           
-          echo "::group::Validating issue project and custom fields"
-          echo "Checking if issue #$ISSUE_NUMBER is in project '$PROJECT_NAME'"
+          echo "::group::Validating custom field values"
+          echo "Checking TestCaseRequired field on issue #$ISSUE_NUMBER"
           
           # Query issue fields using GraphQL
           QUERY=$(cat <<'EOF'
           query($owner:String!, $name:String!, $number:Int!) {
             repository(owner:$owner, name:$name) {
               issue(number:$number) {
-                number
-                title
-                projectItems(first: 10) {
+                projectItems(first: 1) {
                   nodes {
-                    project {
-                      title
-                    }
                     fieldValues(first: 10) {
                       nodes {
                         field {
@@ -136,19 +130,19 @@ jobs:
             -F number="$ISSUE_NUMBER")
           
           # Check TestCaseRequired field
-          TEST_CASE_REQUIRED=$(echo "$ISSUE_RESULT" | jq --arg project "$PROJECT_NAME" -r '.data.repository.issue.projectItems.nodes[] | select(.project.title == $project) | .fieldValues.nodes[0] | .name // "not-set"' | head -1)
+          TEST_CASE_REQUIRED=$(echo "$ISSUE_RESULT" | jq -r '.data.repository.issue.projectItems.nodes[0].fieldValues.nodes[] | select(.field.name == "TestCaseRequired") | .name // empty' | head -1)
           
           if [ "$TEST_CASE_REQUIRED" = "not-set" ]; then
             echo "::endgroup::"
-            echo "::error title=Validation Failed: Invalid Issue::❌ Issue #$ISSUE_NUMBER does not have the TestCaseRequired field set."
+            echo "::error title=Validation Failed: Missing Custom Field::❌ Issue #$ISSUE_NUMBER does not have the TestCaseRequired field set."
             echo ""
             echo "**Why this check failed:**"
-            echo "The TestCaseRequired field is not set on this issue."
+            echo "The linked issue must have the TestCaseRequired custom field defined to ensure it follows the development process."
             echo ""
             echo "**How to fix it:**"
-            echo "1. Create a issue properly linked to the '$PROJECT_NAME' project"
+            echo "1. Go to issue #$ISSUE_NUMBER in the Testing project"
             echo "2. Make sure the TestCaseRequired field is set (either true or false)"
-            echo "3. Link that issue to your PR"
+            echo "3. Re-run the validation after updating the field"
             exit 1
           fi
           
