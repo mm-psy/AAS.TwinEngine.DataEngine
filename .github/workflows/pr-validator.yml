@@ -100,31 +100,34 @@ jobs:
           echo "Checking if issue #$ISSUE_NUMBER is in project '$PROJECT_NAME'"
           
           # Query issue fields using GraphQL
-          ISSUE_RESULT=$(gh api graphql \
-            -f query='
-              query($owner:String!, $name:String!, $number:Int!) {
-                repository(owner:$owner, name:$name) {
-                  issue(number:$number) {
-                    number
-                    title
-                    projectItems(first: 10) {
-                      nodes {
-                        project {
-                          title
-                        }
-                        fieldValuesByName {
-                          TestCaseRequired {
-                            ... on ProjectV2ItemFieldSingleSelectValue {
-                              name
-                            }
-                          }
+          QUERY=$(cat <<'EOF'
+          query($owner:String!, $name:String!, $number:Int!) {
+            repository(owner:$owner, name:$name) {
+              issue(number:$number) {
+                number
+                title
+                projectItems(first: 10) {
+                  nodes {
+                    project {
+                      title
+                    }
+                    fieldValuesByName {
+                      TestCaseRequired {
+                        ... on ProjectV2ItemFieldSingleSelectValue {
+                          name
                         }
                       }
                     }
                   }
                 }
               }
-            ' \
+            }
+          }
+          EOF
+          )
+          
+          ISSUE_RESULT=$(gh api graphql \
+            -f query="$QUERY" \
             -F owner="$OWNER" \
             -F name="$REPO_NAME" \
             -F number="$ISSUE_NUMBER")
