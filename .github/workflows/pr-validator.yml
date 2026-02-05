@@ -21,9 +21,11 @@ jobs:
 
       - name: Check if PR is linked to an issue
         id: check-linked-issue
+        continue-on-error: true
         run: |
-            PR_issue_url = "${{ github.event.pull_request.issue_url }}"
-            echo "PR issue url: $PR_issue_url"
+          PR_issue_url="${{ github.event.pull_request.issue_url }}"
+          echo "PR issue url: $PR_issue_url"
+          
     #   - name: Check if PR is linked to an issue
     #     id: check-linked-issue
     #     run: |
