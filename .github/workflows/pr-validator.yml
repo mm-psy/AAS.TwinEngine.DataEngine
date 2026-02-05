@@ -6,6 +6,9 @@ on:
   pull_request_review:
     types: [submitted, edited]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   validate-pr:
     runs-on: ubuntu-latest
@@ -15,29 +18,94 @@ jobs:
       contents: read
 
     steps:
-      - name: Debug
-        id: debug
+      - name: Setup validation variables
+        id: setup
         run: |
-            echo "Debugging PR Validator Workflow"    
+          echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
+          echo "owner=${REPO%/*}" >> $GITHUB_OUTPUT
+          echo "repo_name=${REPO#*/}" >> $GITHUB_OUTPUT
 
       - name: Check if PR is linked to an issue
         id: check-linked-issue
+        continue-on-error: true
         run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          PR_issue_url="${{ github.event.pull_request.issue_url }}"
-          if [ -n "$PR_issue_url" ]; then
-            echo "::notice title=Linked Issue::[Linked Issue]($PR_issue_url)"
+          PR_NUMBER=${{ steps.setup.outputs.pr_number }}
+          OWNER=${{ github.repository_owner }}
+          REPO_NAME=${{ github.event.repository.name }}
+          
+          echo "::group::Checking PR #$PR_NUMBER for linked issues"
+          
+          # Query for linked issues using GraphQL
+          RESULT=$(gh api graphql \
+            -f query='
+              query($owner:String!, $name:String!, $number:Int!) {
+                repository(owner:$owner, name:$name) {
+                  pullRequest(number:$number) {
+                    closingIssuesReferences(first: 5) {
+                      nodes {
+                        number
+                        title
+                        url
+                        state
+                      }
+                      totalCount
+                    }
+                  }
+                }
+              }
+            ' \
+            -F owner="$OWNER" \
+            -F name="$REPO_NAME" \
+            -F number="$PR_NUMBER" \
+            -r)
+          
+          # Extract issue information
+          ISSUE_COUNT=$(echo "$RESULT" | jq '.data.repository.pullRequest.closingIssuesReferences.totalCount')
+          
+          if [ "$ISSUE_COUNT" -gt 0 ]; then
+            echo "✅ Found $ISSUE_COUNT linked issue(s)"
+            echo "$RESULT" | jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[] | "  • Issue #\(.number): \(.title) (\(.url))"'
+            echo "::endgroup::"
+            exit 0
           else
-            echo "::error title=Missing Linked Issue::This PR is not linked to any issue. Please link an issue to this PR before merging."
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Missing Linked Issue::❌ This PR is not linked to any issue."
+            echo ""
+            echo "**Why this check failed:**"
+            echo "This repository requires all PRs to be linked to at least one issue for tracking and documentation purposes."
+            echo ""
+            echo "**How to fix it:**"
+            echo "Link an issue to this PR using the GitHub UI"
+            echo ""
+            echo "Once linked, the PR will automatically show the linked issue."
             exit 1
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: All checks passed
+      - name: PR validation summary
+        if: success()
         run: |
           echo ""
-          echo "================================"
-          echo "✅ PR VALIDATION SUCCESS"
-          echo "================================"
+          echo "╔════════════════════════════════════╗"
+          echo "║   ✅ PR VALIDATION SUCCESSFUL      ║"
+          echo "╚════════════════════════════════════╝"
           echo ""
-          echo "This PR is ready for merge!"
+          echo "Passed checks:"
+          echo "  ✓ PR is linked to an issue"
           echo ""
+          echo "This PR is ready for review!"
+          echo ""
+
+      - name: PR validation failed
+        if: failure()
+        run: |
+          echo ""
+          echo "╔════════════════════════════════════╗"
+          echo "║   ❌ PR VALIDATION FAILED          ║"
+          echo "╚════════════════════════════════════╝"
+          echo ""
+          echo "Please fix the validation issues above before merging."
+          echo ""
+          exit 1
