@@ -90,20 +90,3 @@ jobs:
           echo "║   ✅ PR VALIDATION SUCCESSFUL      ║"
           echo "╚════════════════════════════════════╝"
           echo ""
-          echo "Passed checks:"
-          echo "  ✓ PR is linked to an issue"
-          echo ""
-          echo "This PR is ready for review!"
-          echo ""
-
-      - name: PR validation failed
-        if: failure()
-        run: |
-          echo ""
-          echo "╔════════════════════════════════════╗"
-          echo "║   ❌ PR VALIDATION FAILED          ║"
-          echo "╚════════════════════════════════════╝"
-          echo ""
-          echo "Please fix the validation issues above before merging."
-          echo ""
-          exit 1
