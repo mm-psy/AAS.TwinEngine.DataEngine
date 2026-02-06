@@ -26,7 +26,6 @@ jobs:
           echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
           echo "owner=${REPO%/*}" >> $GITHUB_OUTPUT
           echo "repo_name=${REPO#*/}" >> $GITHUB_OUTPUT
-# test with gh pr view https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/pull/39 --json closingIssuesReferences
       - name: Check if PR is linked to an issue
         id: check-linked-issue
         run: |
