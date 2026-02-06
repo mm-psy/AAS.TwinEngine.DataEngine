@@ -24,8 +24,9 @@ jobs:
         run: |
           echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
           echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
-          echo "owner=${REPO%/*}" >> $GITHUB_OUTPUT
+          echo "owner=${{ github.repository_owner }}" >> $GITHUB_OUTPUT
           echo "repo_name=${REPO#*/}" >> $GITHUB_OUTPUT
+
       - name: Check if PR is linked to an issue
         id: check-linked-issue
         run: |
@@ -58,7 +59,73 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Check if TestCase is required
+        id: check-testcase-requirement
+        run: |
+          echo "::group::Checking TestCase requirement"
+          
+          # TODO: Implement actual TestCaseRequired label check
+          # Placeholder - always returns true for now
+          echo "⚠️ Placeholder: TestCase requirement check not yet implemented"
+          echo "testcase_required=true" >> $GITHUB_OUTPUT
+          
+          echo "::endgroup::"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Validate QA review
+        id: validate-qa-review
+        if: steps.check-testcase-requirement.outputs.testcase_required == 'true'
+        run: |
+          PR_NUMBER=${{ steps.setup.outputs.pr_number }}
+          REPO=${{ github.repository }}
+          ORG=${{ steps.setup.outputs.owner }}
+          
+          echo "::group::Validating QA review"
+          
+          # Get QA team members from GitHub API
+          echo "Fetching QA team members..."
+          QA_MEMBERS=$(gh api "orgs/$ORG/teams/qa/members" --jq '.[].login' 2>&1)
+          
+          if [ $? -ne 0 ]; then
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: QA Team Not Found::❌ Could not fetch QA team members. Ensure a 'qa' team exists in the organization."
+            exit 1
+          fi
+          
+          if [ -z "$QA_MEMBERS" ]; then
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Empty QA Team::❌ QA team has no members."
+            exit 1
+          fi
+          
+          echo "QA Team members:"
+          echo "$QA_MEMBERS"
+          
+          # Get PR reviews from approved reviewers
+          echo "Checking PR reviews..."
+          APPROVED_REVIEWERS=$(gh pr view $PR_NUMBER --repo "$REPO" --json reviews --jq '.reviews[] | select(.state=="APPROVED") | .author.login')
+          
+          # Check if any QA team member approved the PR
+          QA_APPROVED=false
+          for qa_member in $QA_MEMBERS; do
+            if echo "$APPROVED_REVIEWERS" | grep -q "^${qa_member}$"; then
+              echo "✅ QA team approval found from: $qa_member"
+              QA_APPROVED=true
+              break
+            fi
+          done
+          
+          if [ "$QA_APPROVED" == "true" ]; then
+            echo "::endgroup::"
+          else
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Missing QA Approval::❌ TestCase is required but no approval found from QA team members."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: PR validation Success
         if: success()
