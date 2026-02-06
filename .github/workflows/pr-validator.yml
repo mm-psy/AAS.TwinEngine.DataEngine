@@ -26,50 +26,22 @@ jobs:
           echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
           echo "owner=${REPO%/*}" >> $GITHUB_OUTPUT
           echo "repo_name=${REPO#*/}" >> $GITHUB_OUTPUT
-
+# test with gh pr view https://github.com/AAS-TwinEngine/AAS.TwinEngine.DataEngine/pull/39 --json closingIssuesReferences
       - name: Check if PR is linked to an issue
         id: check-linked-issue
         run: |
           PR_NUMBER=${{ steps.setup.outputs.pr_number }}
-          OWNER=${{ github.repository_owner }}
-          REPO_NAME=${{ github.event.repository.name }}
-          
+          REPO=${{ github.repository }}
           echo "::group::Checking PR #$PR_NUMBER for linked issues"
-          
-          # Query for linked issues using GraphQL
-          RESULT=$(gh api graphql \
-            -f query='
-              query($owner:String!, $name:String!, $number:Int!) {
-                repository(owner:$owner, name:$name) {
-                  pullRequest(number:$number) {
-                    closingIssuesReferences(first: 5) {
-                      nodes {
-                        number
-                        title
-                        url
-                        state
-                      }
-                      totalCount
-                    }
-                  }
-                }
-              }
-            ' \
-            -F owner="$OWNER" \
-            -F name="$REPO_NAME" \
-            -F number="$PR_NUMBER")
-          
-          # Extract issue information
-          ISSUE_COUNT=$(echo "$RESULT" | jq '.data.repository.pullRequest.closingIssuesReferences.totalCount')
-          
+          # Use gh pr view to get closing issues references
+          RESULT=$(gh pr view $PR_NUMBER --repo "$REPO" --json closingIssuesReferences)
+          ISSUE_COUNT=$(echo "$RESULT" | jq '.closingIssuesReferences | length')
           if [ "$ISSUE_COUNT" -gt 0 ]; then
             echo "✅ Found $ISSUE_COUNT linked issue(s)"
-            echo "$RESULT" | jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[] | "  • Issue #\(.number): \(.title) (\(.url))"'
-            
+            echo "$RESULT" | jq -r '.closingIssuesReferences[] | "  • Issue #\(.number): \(.title) (\(.url))"'
             # Extract first issue number for further validation
-            ISSUE_NUMBER=$(echo "$RESULT" | jq '.data.repository.pullRequest.closingIssuesReferences.nodes[0].number')
+            ISSUE_NUMBER=$(echo "$RESULT" | jq '.closingIssuesReferences[0].number')
             echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
-            
             echo "::endgroup::"
             exit 0
           else
