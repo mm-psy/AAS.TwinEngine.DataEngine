@@ -9,7 +9,7 @@ namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests;
 public abstract class ApiTestBase : IAsyncLifetime
 {
     protected IAPIRequestContext ApiContext { get; private set; } = null!;
-    protected string BaseUrl { get; private set; } = "http://localhost:8085";
+    protected string BaseUrl { get; private set; } = Environment.GetEnvironmentVariable("BASE_URL") ?? "http://localhost:8085";
     
     // Base64 encoded identifiers
     protected string AasIdentifier { get; private set; } = null!;
