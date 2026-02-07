@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.SubmodelRepository;
 
@@ -26,10 +24,10 @@ public class SerializationTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 
     [Fact]
@@ -47,10 +45,10 @@ public class SerializationTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 
     [Fact]
@@ -68,10 +66,10 @@ public class SerializationTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 
     [Fact]
@@ -86,9 +84,9 @@ public class SerializationTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 }

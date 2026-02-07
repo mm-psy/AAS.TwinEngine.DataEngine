@@ -1,7 +1,5 @@
 ﻿using System.Text.Json;
 
-using FluentAssertions;
-
 namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.AasRegistry;
 
 /// <summary>
@@ -21,10 +19,10 @@ public class AasRegistryTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 
     [Fact]
@@ -39,10 +37,10 @@ public class AasRegistryTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 
     [Fact]
@@ -57,9 +55,9 @@ public class AasRegistryTests : ApiTestBase
         // Assert
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
-        content.Should().NotBeNullOrEmpty();
+        Assert.False(string.IsNullOrEmpty(content));
         
         var json = JsonDocument.Parse(content);
-        json.Should().NotBeNull();
+        Assert.NotNull(json);
     }
 }
