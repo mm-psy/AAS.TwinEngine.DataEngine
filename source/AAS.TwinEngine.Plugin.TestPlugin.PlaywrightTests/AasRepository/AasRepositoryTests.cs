@@ -1,0 +1,79 @@
+﻿using FluentAssertions;
+
+using System.Text.Json;
+
+namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.AasRepository;
+
+/// <summary>
+/// Tests for AAS Repository endpoints
+/// </summary>
+public class AasRepositoryTests : ApiTestBase
+{
+    [Fact]
+    public async Task GetShellById_ShouldReturnSuccess()
+    {
+        // Arrange
+        var url = $"/shells/{AasIdentifier}";
+
+        // Act
+        var response = await ApiContext.GetAsync(url);
+
+        // Assert
+        AssertSuccessResponse(response);
+        var content = await response.TextAsync();
+        content.Should().NotBeNullOrEmpty();
+        
+        // Verify it's valid JSON
+        var json = JsonDocument.Parse(content);
+        json.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task GetAssetInformationById_ShouldReturnSuccess()
+    {
+        // Arrange
+        var url = $"/shells/{AasIdentifier}/asset-information";
+
+        // Act
+        var response = await ApiContext.GetAsync(url);
+
+        // Assert
+        AssertSuccessResponse(response);
+        var content = await response.TextAsync();
+        content.Should().NotBeNullOrEmpty();
+        
+        var json = JsonDocument.Parse(content);
+        json.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task GetSubmodelRefById_ShouldReturnSuccess()
+    {
+        // Arrange
+        var url = $"/shells/{AasIdentifier}/submodel-refs";
+
+        // Act
+        var response = await ApiContext.GetAsync(url);
+
+        // Assert
+        AssertSuccessResponse(response);
+        var content = await response.TextAsync();
+        content.Should().NotBeNullOrEmpty();
+        
+        var json = JsonDocument.Parse(content);
+        json.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task GetHealth_ShouldReturnSuccess()
+    {
+        // Arrange
+        var url = "/healthz";
+
+        // Act
+        var response = await ApiContext.GetAsync(url);
+
+        // Assert
+        AssertSuccessResponse(response);
+    }
+}
