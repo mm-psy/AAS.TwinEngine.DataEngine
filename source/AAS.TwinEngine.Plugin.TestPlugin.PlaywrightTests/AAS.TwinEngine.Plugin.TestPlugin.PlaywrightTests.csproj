@@ -47,7 +47,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SubmodelRegistry\TestData\GetSubmodelDescriptorById_Reliability_Expected.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SubmodelRepository\TestData\GetSubmodelElement_ContactInfo_ContactInformation_Expected.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
