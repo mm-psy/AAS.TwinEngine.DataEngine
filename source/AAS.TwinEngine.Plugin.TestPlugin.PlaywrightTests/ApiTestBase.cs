@@ -58,13 +58,11 @@ public abstract class ApiTestBase : IAsyncLifetime
     /// <summary>
     /// Asserts that an API response is successful
     /// </summary>
-    protected static void AssertSuccessResponse(IAPIResponse response) => Assert.True(response.Ok, $"Expected successful response but got {response.Status}: {response.StatusText}");
-
-    /// <summary>
-    /// Asserts that an API response has a specific status code
-    /// </summary>
-    protected static void AssertStatusCode(IAPIResponse response, int expectedStatusCode) => Assert.Equal(expectedStatusCode, response.Status);
-
+    protected static void AssertSuccessResponse(IAPIResponse response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        Assert.True(response.Ok, $"Expected successful response but got {response.Status}: {response.StatusText}");
+    }
 
     /// <summary>
     /// Asserts that an JsonDocument is equals to the expected JSON content from a file
