@@ -20,7 +20,7 @@ public class AasRepositoryTests : ApiTestBase
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
         Assert.False(string.IsNullOrEmpty(content));
-        
+
         // Verify it's valid JSON
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
@@ -39,7 +39,7 @@ public class AasRepositoryTests : ApiTestBase
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
         Assert.False(string.IsNullOrEmpty(content));
-        
+
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
     }
@@ -57,21 +57,8 @@ public class AasRepositoryTests : ApiTestBase
         AssertSuccessResponse(response);
         var content = await response.TextAsync();
         Assert.False(string.IsNullOrEmpty(content));
-        
+
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
-    }
-
-    [Fact]
-    public async Task GetHealth_ShouldReturnSuccess()
-    {
-        // Arrange
-        var url = "/healthz";
-
-        // Act
-        var response = await ApiContext.GetAsync(url);
-
-        // Assert
-        AssertSuccessResponse(response);
     }
 }

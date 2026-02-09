@@ -40,15 +40,12 @@ public abstract class ApiTestBase : IAsyncLifetime
         SubmodelIdentifierReliability = Base64EncodeUrl("https://mm-software.com/submodel/000-001/Reliability");
     }
 
-    public async Task DisposeAsync()
-    {
-        await ApiContext.DisposeAsync();
-    }
+    public async Task DisposeAsync() => await ApiContext.DisposeAsync();
 
     /// <summary>
     /// Base64 URL encodes a string
     /// </summary>
-    protected static string Base64EncodeUrl(string str)
+    public static string Base64EncodeUrl(string str)
     {
         var bytes = Encoding.UTF8.GetBytes(str);
         return Convert.ToBase64String(bytes);
@@ -57,16 +54,10 @@ public abstract class ApiTestBase : IAsyncLifetime
     /// <summary>
     /// Asserts that an API response is successful
     /// </summary>
-    protected void AssertSuccessResponse(IAPIResponse response)
-    {
-        Assert.True(response.Ok, $"Expected successful response but got {response.Status}: {response.StatusText}");
-    }
+    protected static void AssertSuccessResponse(IAPIResponse response) => Assert.True(response.Ok, $"Expected successful response but got {response.Status}: {response.StatusText}");
 
     /// <summary>
     /// Asserts that an API response has a specific status code
     /// </summary>
-    protected void AssertStatusCode(IAPIResponse response, int expectedStatusCode)
-    {
-        Assert.Equal(expectedStatusCode, response.Status);
-    }
+    protected static void AssertStatusCode(IAPIResponse response, int expectedStatusCode) => Assert.Equal(expectedStatusCode, response.Status);
 }
