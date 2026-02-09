@@ -15,7 +15,7 @@ The tests are organized to match the Bruno API collection structure and cover th
 
 1. .NET 8.0 SDK
 2. Playwright for .NET
-3. Running instance of the TestPlugin service (default: http://localhost:8085)
+3. Running instance of the DataEngine service (default: http://localhost:8085)
 
 ## Installation
 
@@ -25,11 +25,10 @@ First, restore the NuGet packages:
 dotnet restore
 ```
 
-Install Playwright browsers:
+Build:
 
 ```powershell
 dotnet build
-pwsh bin/Debug/net8.0/playwright.ps1 install
 ```
 
 ## Running Tests
@@ -51,7 +50,7 @@ dotnet test --filter FullyQualifiedName~AasRepositoryTests
 Set the environment variable before running tests:
 
 ```powershell
-$env:DATA_ENGINE_BASE_URL="http://localhost:8085"
+$env:BASE_URL="http://localhost:8085"
 dotnet test
 ```
 
@@ -60,11 +59,12 @@ dotnet test
 ```
 AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests/
 ├── ApiTestBase.cs                  # Base class for all API tests
-├── TestConfiguration.cs            # Configuration settings and constants
 ├── AasRegistry/
 │   └── AasRegistryTests.cs        # Tests for AAS Registry endpoints
 ├── AasRepository/
 │   └── AasRepositoryTests.cs      # Tests for AAS Repository endpoints
+├── DataEngine/
+│   └── HealthTests.cs             # Tests for Data Engine health endpoint
 ├── SubmodelRegistry/
 │   └── SubmodelRegistryTests.cs   # Tests for Submodel Registry endpoints
 └── SubmodelRepository/
@@ -81,8 +81,7 @@ AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests/
   - Initializes Playwright API request context
   - Provides Base64 URL encoding for identifiers
   - Contains assertion helpers
-
-- **TestConfiguration.cs**: Configuration settings and constants
+  - Manages configuration including base URL and test identifiers
 
 ### Test Classes
 
@@ -90,24 +89,25 @@ AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests/
    - GetShellById
    - GetAssetInformationById
    - GetSubmodelRefById
-   - GetHealth
 
 2. **SubmodelRepository/SubmodelTests.cs**: Tests for Submodel endpoints
    - GetSubmodel for Nameplate, ContactInfo, and Reliability
 
 3. **SubmodelRepository/SubmodelElementTests.cs**: Tests for Submodel Element endpoints
    - GetSubmodelElement for various element types and submodels
-   - Uses parameterized tests for multiple scenarios
 
-4. **AasRegistry/AasRegistryTests.cs**: Tests for AAS Registry endpoints
+4. **DataEngine/HealthTests.cs**: Tests for Data Engine health endpoint
+   - GetHealth
+
+5. **AasRegistry/AasRegistryTests.cs**: Tests for AAS Registry endpoints
    - GetAllShellDescriptors (with and without pagination)
    - GetShellDescriptorById
 
-5. **SubmodelRegistry/SubmodelRegistryTests.cs**: Tests for Submodel Registry endpoints
+6. **SubmodelRegistry/SubmodelRegistryTests.cs**: Tests for Submodel Registry endpoints
    - GetSubmodelDescriptorById for various submodels
 
-6. **SubmodelRepository/SerializationTests.cs**: Tests for Serialization endpoints
-   - GetAppropriateSerialization with various combinations of parameters
+7. **SubmodelRepository/SerializationTests.cs**: Tests for Serialization endpoints
+   - GetAppropriateSerialization with multiple submodels
 
 ## Configuration
 
@@ -126,27 +126,29 @@ All identifiers are automatically Base64 URL encoded in the tests.
 
 ```csharp
 [Fact]
-public async Task GetShellById_ShouldReturnSuccess()
-{
-    // Arrange
-    var url = $"/shells/{AasIdentifier}";
+    public async Task GetShellById_ShouldReturnSuccess_ContentAsExpected()
+    {
+        // Arrange
+        var url = $"/shells/{AasIdentifier}";
 
-    // Act
-    var response = await ApiContext.GetAsync(url);
+        // Act
+        var response = await ApiContext.GetAsync(url);
 
-    // Assert
-    AssertSuccessResponse(response);
-    var content = await response.TextAsync();
-    content.Should().NotBeNullOrEmpty();
-    
-    var json = JsonDocument.Parse(content);
-    json.Should().NotBeNull();
-}
+        // Assert
+        AssertSuccessResponse(response);
+        var content = await response.TextAsync();
+        Assert.False(string.IsNullOrEmpty(content));
+
+        // Verify it's valid JSON
+        var json = JsonDocument.Parse(content);
+        Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "AasRepository", "TestData", "GetShellById_Expected.json"));
+    }
 ```
 
 ## Notes
 
 - All tests inherit from `ApiTestBase` which implements `IAsyncLifetime` for proper setup and teardown
-- Tests use FluentAssertions for more readable assertions
 - Identifiers are Base64 URL encoded as required by the API
 - JSON responses are validated to ensure they are well-formed

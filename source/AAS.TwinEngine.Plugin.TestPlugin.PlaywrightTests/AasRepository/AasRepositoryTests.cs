@@ -8,7 +8,7 @@ namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.AasRepository;
 public class AasRepositoryTests : ApiTestBase
 {
     [Fact]
-    public async Task GetShellById_ShouldReturnSuccess()
+    public async Task GetShellById_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/shells/{AasIdentifier}";
@@ -24,10 +24,12 @@ public class AasRepositoryTests : ApiTestBase
         // Verify it's valid JSON
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "AasRepository", "TestData", "GetShellById_Expected.json"));
     }
 
     [Fact]
-    public async Task GetAssetInformationById_ShouldReturnSuccess()
+    public async Task GetAssetInformationById_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/shells/{AasIdentifier}/asset-information";
@@ -42,10 +44,12 @@ public class AasRepositoryTests : ApiTestBase
 
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "AasRepository", "TestData", "GetAssetInformationById_Expected.json"));
     }
 
     [Fact]
-    public async Task GetSubmodelRefById_ShouldReturnSuccess()
+    public async Task GetSubmodelRefById_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/shells/{AasIdentifier}/submodel-refs";
@@ -60,5 +64,7 @@ public class AasRepositoryTests : ApiTestBase
 
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "AasRepository", "TestData", "GetSubmodelRefById_Expected.json"));
     }
 }

@@ -8,7 +8,7 @@ namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.SubmodelRepository;
 public class SubmodelTests : ApiTestBase
 {
     [Fact]
-    public async Task GetSubmodel_Nameplate_ShouldReturnSuccess()
+    public async Task GetSubmodel_Nameplate_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/submodels/{SubmodelIdentifierNameplate}/";
@@ -23,10 +23,12 @@ public class SubmodelTests : ApiTestBase
         
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "SubmodelRepository", "TestData", "GetSubmodel_Nameplate_Expected.json"));
     }
 
     [Fact]
-    public async Task GetSubmodel_ContactInfo_ShouldReturnSuccess()
+    public async Task GetSubmodel_ContactInfo_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/submodels/{SubmodelIdentifierContact}/";
@@ -41,10 +43,12 @@ public class SubmodelTests : ApiTestBase
         
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "SubmodelRepository", "TestData", "GetSubmodel_ContactInfo_Expected.json"));
     }
 
     [Fact]
-    public async Task GetSubmodel_Reliability_ShouldReturnSuccess()
+    public async Task GetSubmodel_Reliability_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/submodels/{SubmodelIdentifierReliability}/";
@@ -59,5 +63,7 @@ public class SubmodelTests : ApiTestBase
         
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "SubmodelRepository", "TestData", "GetSubmodel_Reliability_Expected.json"));
     }
 }

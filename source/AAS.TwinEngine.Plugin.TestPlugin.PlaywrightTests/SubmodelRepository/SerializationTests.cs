@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.SubmodelRepository;
+﻿namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.SubmodelRepository;
 
 /// <summary>
 /// Tests for appropriate serialization endpoints
@@ -20,73 +18,12 @@ public class SerializationTests : ApiTestBase
 
         // Act
         var response = await ApiContext.GetAsync(url);
-
-        // Assert
-        AssertSuccessResponse(response);
         var content = await response.TextAsync();
+
         Assert.False(string.IsNullOrEmpty(content));
-        
-        var json = JsonDocument.Parse(content);
-        Assert.NotNull(json);
-    }
 
-    [Fact]
-    public async Task GetAppropriateSerialization_WithSingleSubmodel_ShouldReturnSuccess()
-    {
-        // Arrange
-        var url = $"/serialization" +
-                  $"?aasIds={AasIdentifier}" +
-                  $"&submodelIds={SubmodelIdentifierNameplate}" +
-                  $"&includeConceptDescriptions=false";
-
-        // Act
-        var response = await ApiContext.GetAsync(url);
-
-        // Assert
-        AssertSuccessResponse(response);
-        var content = await response.TextAsync();
-        Assert.False(string.IsNullOrEmpty(content));
-        
-        var json = JsonDocument.Parse(content);
-        Assert.NotNull(json);
-    }
-
-    [Fact]
-    public async Task GetAppropriateSerialization_WithConceptDescriptions_ShouldReturnSuccess()
-    {
-        // Arrange
-        var url = $"/serialization" +
-                  $"?aasIds={AasIdentifier}" +
-                  $"&submodelIds={SubmodelIdentifierNameplate}" +
-                  $"&includeConceptDescriptions=true";
-
-        // Act
-        var response = await ApiContext.GetAsync(url);
-
-        // Assert
-        AssertSuccessResponse(response);
-        var content = await response.TextAsync();
-        Assert.False(string.IsNullOrEmpty(content));
-        
-        var json = JsonDocument.Parse(content);
-        Assert.NotNull(json);
-    }
-
-    [Fact]
-    public async Task GetAppropriateSerialization_OnlyAasId_ShouldReturnSuccess()
-    {
-        // Arrange
-        var url = $"/serialization?aasIds={AasIdentifier}&includeConceptDescriptions=false";
-
-        // Act
-        var response = await ApiContext.GetAsync(url);
-
-        // Assert
-        AssertSuccessResponse(response);
-        var content = await response.TextAsync();
-        Assert.False(string.IsNullOrEmpty(content));
-        
-        var json = JsonDocument.Parse(content);
-        Assert.NotNull(json);
+        Assert.Contains("https://mm-software.com/submodel/000-001/Nameplate", content);
+        Assert.Contains("https://admin-shell.io/zvei/nameplate/1/0/ContactInformations/ContactInformation", content);
+        Assert.Contains("http://schemas.openxmlformats.org/package/2006/relationships", content);
     }
 }

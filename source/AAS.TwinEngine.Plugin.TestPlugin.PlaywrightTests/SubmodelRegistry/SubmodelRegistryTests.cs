@@ -8,7 +8,7 @@ namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests.SubmodelRegistry;
 public class SubmodelRegistryTests : ApiTestBase
 {
     [Fact]
-    public async Task GetSubmodelDescriptorById_Contact_ShouldReturnSuccess()
+    public async Task GetSubmodelDescriptorById_Contact_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/submodel-descriptors/{SubmodelIdentifierContact}";
@@ -23,10 +23,12 @@ public class SubmodelRegistryTests : ApiTestBase
         
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "SubmodelRegistry", "TestData", "GetSubmodelDescriptorById_Contact_Expected.json"));
     }
 
     [Fact]
-    public async Task GetSubmodelDescriptorById_Nameplate_ShouldReturnSuccess()
+    public async Task GetSubmodelDescriptorById_Nameplate_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/submodel-descriptors/{SubmodelIdentifierNameplate}";
@@ -41,10 +43,12 @@ public class SubmodelRegistryTests : ApiTestBase
         
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "SubmodelRegistry", "TestData", "GetSubmodelDescriptorById_Nameplate_Expected.json"));
     }
 
     [Fact]
-    public async Task GetSubmodelDescriptorById_Reliability_ShouldReturnSuccess()
+    public async Task GetSubmodelDescriptorById_Reliability_ShouldReturnSuccess_ContentAsExpected()
     {
         // Arrange
         var url = $"/submodel-descriptors/{SubmodelIdentifierReliability}";
@@ -59,5 +63,7 @@ public class SubmodelRegistryTests : ApiTestBase
         
         var json = JsonDocument.Parse(content);
         Assert.NotNull(json);
+
+        await CompareJsonAsync(json, Path.Combine(Directory.GetCurrentDirectory(), "SubmodelRegistry", "TestData", "GetSubmodelDescriptorById_Reliability_Expected.json"));
     }
 }

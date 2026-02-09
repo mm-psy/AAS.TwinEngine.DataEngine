@@ -1,5 +1,7 @@
 ﻿using Microsoft.Playwright;
+
 using System.Text;
+using System.Text.Json;
 
 namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests;
 
@@ -8,9 +10,11 @@ namespace AAS.TwinEngine.Plugin.TestPlugin.PlaywrightTests;
 /// </summary>
 public abstract class ApiTestBase : IAsyncLifetime
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { WriteIndented = false };
+
     protected IAPIRequestContext ApiContext { get; private set; } = null!;
     protected string BaseUrl { get; private set; } = Environment.GetEnvironmentVariable("BASE_URL") ?? "http://localhost:8085";
-    
+
     // Base64 encoded identifiers
     protected string AasIdentifier { get; private set; } = null!;
     protected string SubmodelIdentifierContact { get; private set; } = null!;
@@ -21,7 +25,7 @@ public abstract class ApiTestBase : IAsyncLifetime
     {
         // Initialize Playwright
         var playwright = await Playwright.CreateAsync();
-        
+
         // Create API request context
         ApiContext = await playwright.APIRequest.NewContextAsync(new()
         {
@@ -60,4 +64,23 @@ public abstract class ApiTestBase : IAsyncLifetime
     /// Asserts that an API response has a specific status code
     /// </summary>
     protected static void AssertStatusCode(IAPIResponse response, int expectedStatusCode) => Assert.Equal(expectedStatusCode, response.Status);
+
+
+    /// <summary>
+    /// Asserts that an JsonDocument is equals to the expected JSON content from a file
+    /// </summary>
+    protected static async Task CompareJsonAsync(JsonDocument actualDoc, string fullPath)
+    {
+        // Load expected test data and compare
+        var expectedJson = await File.ReadAllTextAsync(fullPath);
+
+        var expectedDoc = JsonDocument.Parse(expectedJson);
+        Assert.NotNull(expectedDoc);
+
+
+        // Compare JSON content (normalize formatting for comparison)
+        var expectedNormalized = JsonSerializer.Serialize(expectedDoc, JsonSerializerOptions);
+        var actualNormalized = JsonSerializer.Serialize(actualDoc, JsonSerializerOptions);
+        Assert.Equal(expectedNormalized, actualNormalized);
+    }
 }
