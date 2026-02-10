@@ -138,7 +138,7 @@ jobs:
 
       - name: Publish Test Results
         uses: dorny/test-reporter@fe45e9537387dac839af0d33ba56eed8e24189e8 # v2.3.0
-        if: always() && github.event.pull_request.head.repo.fork == false
+        if: always()
         with:
           name: Playwright Test Results
           path: "**/playwright_test_results.trx"
