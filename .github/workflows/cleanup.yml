@@ -17,4 +17,4 @@ jobs:
           package: dataengine
           delete-untagged: true
           exclude-tags: v**
-          older-than: 1 days
+          older-than: 30 days
