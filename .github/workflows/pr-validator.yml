@@ -75,11 +75,10 @@ jobs:
             else
               after_clause=", after: \"$cursor\""
             fi
-            QUERY=$(cat <<EOF
-            {
-              organization(login: \"$ORG\") {
-                projectV2(number: $PROJECT_NUMBER) {
-                  items(first: 50$after_clause) {
+            QUERY='{
+              organization(login: "'"$ORG"'") {
+                projectV2(number: '"$PROJECT_NUMBER"') {
+                  items(first: 50'"$after_clause"') {
                     pageInfo { hasNextPage endCursor }
                     nodes {
                       content { ... on Issue { id number title } }
@@ -95,9 +94,7 @@ jobs:
                   }
                 }
               }
-            }
-            EOF
-            )
+            }'
             RESULT=$(gh api graphql -f query="$QUERY")
             match=$(echo "$RESULT" | jq --arg num "$ISSUE_NUMBER" '
               .data.organization.projectV2.items.nodes[]
