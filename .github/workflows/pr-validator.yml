@@ -64,15 +64,94 @@ jobs:
         id: check-testcase-requirement
         run: |
           echo "::group::Checking TestCase requirement"
-          
-          # TODO: Implement actual TestCaseRequired label check
-          # Placeholder - always returns true for now
-          echo "⚠️ Placeholder: TestCase requirement check not yet implemented"
-          echo "testcase_required=true" >> $GITHUB_OUTPUT
-          
+          ORG="${{ steps.setup.outputs.owner }}"
+          PROJECT_NUMBER=1
+          ISSUE_NUMBER=${{ steps.check-linked-issue.outputs.issue_number }}
+          cursor=null
+          found="false"
+          while [ "$cursor" != "end" ]; do
+            if [ "$cursor" = "null" ]; then
+              after_clause=""
+            else
+              after_clause=", after: \"$cursor\""
+            fi
+            QUERY=$(cat <<EOF
+            {
+              organization(login: \"$ORG\") {
+                projectV2(number: $PROJECT_NUMBER) {
+                  items(first: 50$after_clause) {
+                    pageInfo { hasNextPage endCursor }
+                    nodes {
+                      content { ... on Issue { id number title } }
+                      fieldValues(last: 10) {
+                        nodes {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            field { ... on ProjectV2SingleSelectField { name } }
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            EOF
+            )
+            RESULT=$(gh api graphql -f query="$QUERY")
+            match=$(echo "$RESULT" | jq --arg num "$ISSUE_NUMBER" '
+              .data.organization.projectV2.items.nodes[]
+              | select(.content.number == ($num|tonumber))
+              | .fieldValues.nodes[]
+              | select(.field.name == "TestCaseRequired")
+              | select(.name == "True")
+            ')
+            if [ -n "$match" ]; then
+              found="true"
+              break
+            fi
+            hasNextPage=$(echo "$RESULT" | jq -r '.data.organization.projectV2.items.pageInfo.hasNextPage')
+            if [ "$hasNextPage" = "true" ]; then
+              cursor=$(echo "$RESULT" | jq -r '.data.organization.projectV2.items.pageInfo.endCursor')
+            else
+              cursor="end"
+            fi
+          done
+          if [ "$found" = "true" ]; then
+            echo "TestCaseRequired is True for issue #$ISSUE_NUMBER"
+            echo "testcase_required=true" >> $GITHUB_OUTPUT
+          else
+            echo "TestCaseRequired is NOT True for issue #$ISSUE_NUMBER"
+            echo "testcase_required=false" >> $GITHUB_OUTPUT
+          fi
           echo "::endgroup::"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+# Filter for TestCaseRequired label on the linked issue using GitHub API
+#           $ gh api graphql -f query='{
+#   organization(login: "AAS-TwinEngine") {
+#     projectV2(number: 1) {
+#       items(first: 3) {
+#         nodes {
+#           content {
+#             ... on Issue {
+#               id, number, title
+#             }
+#           }
+#           fieldValues(last: 3) {
+#             nodes {
+#               ... on ProjectV2ItemFieldSingleSelectValue {
+#                 field { ... on ProjectV2SingleSelectField  { name } }
+#                 name
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }'
 
       - name: Validate QA review
         id: validate-qa-review
