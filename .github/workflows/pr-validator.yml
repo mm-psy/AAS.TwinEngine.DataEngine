@@ -76,7 +76,8 @@ jobs:
               after_clause=", after: \"$cursor\""
             fi
             QUERY='{
-              organization(login: "'"$ORG"'") {
+              # organization(login: "'"$ORG"'") {
+              user(login: "'"$ORG"'") {
                 projectV2(number: '"$PROJECT_NUMBER"') {
                   items(first: 50'"$after_clause"') {
                     pageInfo { hasNextPage endCursor }
