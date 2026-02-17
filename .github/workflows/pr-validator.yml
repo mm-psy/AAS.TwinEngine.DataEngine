@@ -65,7 +65,7 @@ jobs:
         run: |
           echo "::group::Checking TestCase requirement"
           ORG="${{ steps.setup.outputs.owner }}"
-          PROJECT_NUMBER=1
+          PROJECT_NUMBER=3
           ISSUE_NUMBER=${{ steps.check-linked-issue.outputs.issue_number }}
           cursor=null
           found="false"
