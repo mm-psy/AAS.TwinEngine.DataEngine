@@ -13,10 +13,7 @@ env:
 jobs:
   validate-pr:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-      issues: read
-      contents: read
+    permissions: read-all
 
     steps:
       - name: Setup validation variables
