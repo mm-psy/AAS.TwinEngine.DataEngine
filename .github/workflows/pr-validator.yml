@@ -67,7 +67,9 @@ jobs:
       - name: Check if TestCase is required
         id: check-testcase-requirement
         run: |
+          echo Test ....
           gh project list
+          echo Test End ....
           echo "::group::Checking TestCase requirement"
           ORG="${{ steps.setup.outputs.owner }}"
           PROJECT_NUMBER=3
