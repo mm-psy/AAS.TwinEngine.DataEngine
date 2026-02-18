@@ -1,0 +1,223 @@
+name: PR Validator
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PROJECT_NAME: "Testing"
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+    permissions: read-all
+
+    steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.PR_VAL_ID }}
+          private-key: ${{ secrets.PR_VAL_PRIVATE_KEY }}
+
+      - name: Setup validation variables
+        id: setup
+        run: |
+          echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
+          echo "owner=${{ github.repository_owner }}" >> $GITHUB_OUTPUT
+          echo "repo_name=${REPO#*/}" >> $GITHUB_OUTPUT
+
+      - name: Check if PR is linked to an issue
+        id: check-linked-issue
+        run: |
+          PR_NUMBER=${{ steps.setup.outputs.pr_number }}
+          REPO=${{ github.repository }}
+          echo "::group::Checking PR #$PR_NUMBER for linked issues"
+          # Use gh pr view to get closing issues references
+          RESULT=$(gh pr view $PR_NUMBER --repo "$REPO" --json closingIssuesReferences)
+          ISSUE_COUNT=$(echo "$RESULT" | jq '.closingIssuesReferences | length')
+          if [ "$ISSUE_COUNT" -gt 0 ]; then
+            echo "✅ Found $ISSUE_COUNT linked issue(s)"
+            echo "$RESULT" | jq -r '.closingIssuesReferences[] | "  • Issue #\(.number): \(.title) (\(.url))"'
+            # Extract first issue number for further validation
+            ISSUE_NUMBER=$(echo "$RESULT" | jq '.closingIssuesReferences[0].number')
+            echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+            echo "::endgroup::"
+            exit 0
+          else
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Missing Linked Issue::❌ This PR is not linked to any issue."
+            echo ""
+            echo "**Why this check failed:**"
+            echo "This repository requires all PRs to be linked to at least one issue for tracking and documentation purposes."
+            echo ""
+            echo "**How to fix it:**"
+            echo "Link an issue to this PR using the GitHub UI"
+            echo ""
+            echo "Once linked, the PR will automatically show the linked issue."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      
+      - name: Check if TestCase is required
+        id: check-testcase-requirement
+        run: |
+          echo Test ....
+            PROJECTS=$(gh project list --owner ${{ steps.setup.outputs.owner }} --format json)
+            echo "Available projects:"
+            echo "$PROJECTS" | jq '.'
+          echo Test End ....
+          echo "::group::Checking TestCase requirement"
+          ORG="${{ steps.setup.outputs.owner }}"
+          PROJECT_NUMBER=3
+          ISSUE_NUMBER=${{ steps.check-linked-issue.outputs.issue_number }}
+          cursor=null
+          found="false"
+          while [ "$cursor" != "end" ]; do
+            if [ "$cursor" = "null" ]; then
+              after_clause=""
+            else
+              after_clause=", after: \"$cursor\""
+            fi
+            QUERY='{
+              # organization(login: "'"$ORG"'") {
+              user(login: "'"$ORG"'") {
+                projectV2(number: '"$PROJECT_NUMBER"') {
+                  items(first: 50'"$after_clause"') {
+                    pageInfo { hasNextPage endCursor }
+                    nodes {
+                      content { ... on Issue { id number title } }
+                      fieldValues(last: 10) {
+                        nodes {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            field { ... on ProjectV2SingleSelectField { name } }
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }'
+            RESULT=$(gh api graphql -f query="$QUERY")
+            match=$(echo "$RESULT" | jq --arg num "$ISSUE_NUMBER" '
+              .data.organization.projectV2.items.nodes[]
+              | select(.content.number == ($num|tonumber))
+              | .fieldValues.nodes[]
+              | select(.field.name == "TestCaseRequired")
+              | select(.name == "True")
+            ')
+            if [ -n "$match" ]; then
+              found="true"
+              break
+            fi
+            hasNextPage=$(echo "$RESULT" | jq -r '.data.organization.projectV2.items.pageInfo.hasNextPage')
+            if [ "$hasNextPage" = "true" ]; then
+              cursor=$(echo "$RESULT" | jq -r '.data.organization.projectV2.items.pageInfo.endCursor')
+            else
+              cursor="end"
+            fi
+          done
+          if [ "$found" = "true" ]; then
+            echo "TestCaseRequired is True for issue #$ISSUE_NUMBER"
+            echo "testcase_required=true" >> $GITHUB_OUTPUT
+          else
+            echo "TestCaseRequired is NOT True for issue #$ISSUE_NUMBER"
+            echo "testcase_required=false" >> $GITHUB_OUTPUT
+          fi
+          echo "::endgroup::"
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token  }}
+          
+# Filter for TestCaseRequired label on the linked issue using GitHub API
+#           $ gh api graphql -f query='{
+#   organization(login: "AAS-TwinEngine") {
+#     projectV2(number: 1) {
+#       items(first: 3) {
+#         nodes {
+#           content {
+#             ... on Issue {
+#               id, number, title
+#             }
+#           }
+#           fieldValues(last: 3) {
+#             nodes {
+#               ... on ProjectV2ItemFieldSingleSelectValue {
+#                 field { ... on ProjectV2SingleSelectField  { name } }
+#                 name
+#               }
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+# }'
+
+      - name: Validate QA review
+        id: validate-qa-review
+        if: steps.check-testcase-requirement.outputs.testcase_required == 'true'
+        run: |
+          PR_NUMBER=${{ steps.setup.outputs.pr_number }}
+          REPO=${{ github.repository }}
+          ORG=${{ steps.setup.outputs.owner }}
+          
+          echo "::group::Validating QA review"
+          
+          # Get QA team members from GitHub API
+          echo "Fetching QA team members..."
+          QA_MEMBERS=$(gh api "orgs/$ORG/teams/qa/members" --jq '.[].login' 2>&1)
+          
+          if [ $? -ne 0 ]; then
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: QA Team Not Found::❌ Could not fetch QA team members. Ensure a 'qa' team exists in the organization."
+            exit 1
+          fi
+          
+          if [ -z "$QA_MEMBERS" ]; then
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Empty QA Team::❌ QA team has no members."
+            exit 1
+          fi
+          
+          echo "QA Team members:"
+          echo "$QA_MEMBERS"
+          
+          # Get PR reviews from approved reviewers
+          echo "Checking PR reviews..."
+          APPROVED_REVIEWERS=$(gh pr view $PR_NUMBER --repo "$REPO" --json reviews --jq '.reviews[] | select(.state=="APPROVED") | .author.login')
+          
+          # Check if any QA team member approved the PR
+          QA_APPROVED=false
+          for qa_member in $QA_MEMBERS; do
+            if echo "$APPROVED_REVIEWERS" | grep -q "^${qa_member}$"; then
+              echo "✅ QA team approval found from: $qa_member"
+              QA_APPROVED=true
+              break
+            fi
+          done
+          
+          if [ "$QA_APPROVED" == "true" ]; then
+            echo "::endgroup::"
+          else
+            echo "::endgroup::"
+            echo "::error title=Validation Failed: Missing QA Approval::❌ TestCase is required but no approval found from QA team members."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+
+      - name: PR validation Success
+        if: success()
+        run: |
+          echo ""
+          echo "╔════════════════════════════════════╗"
+          echo "║   ✅ PR VALIDATION SUCCESSFUL      ║"
+          echo "╚════════════════════════════════════╝"
+          echo ""
