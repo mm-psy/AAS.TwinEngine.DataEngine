@@ -67,9 +67,7 @@ jobs:
       - name: Check if TestCase is required
         id: check-testcase-requirement
         run: |
-          gh auth status
-          gh 
-          api graphql -f query='{ viewer { projectsV2(first: 20) { nodes { number title } } } }'
+          gh api graphql -f query='{ viewer { projectsV2(first: 20) { nodes { number title } } } }'
           echo "::group::Checking TestCase requirement"
           ORG="${{ steps.setup.outputs.owner }}"
           PROJECT_NUMBER=3
