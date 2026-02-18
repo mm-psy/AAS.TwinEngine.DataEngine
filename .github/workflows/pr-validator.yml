@@ -16,6 +16,13 @@ jobs:
     permissions: read-all
 
     steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.PR_VAL_ID }}
+          private-key: ${{ secrets.PR_VAL_PRIVATE_KEY }}
+
       - name: Setup validation variables
         id: setup
         run: |
@@ -55,7 +62,7 @@ jobs:
             exit 1
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
       
       - name: Check if TestCase is required
         id: check-testcase-requirement
@@ -121,7 +128,7 @@ jobs:
           fi
           echo "::endgroup::"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token  }}
           
 # Filter for TestCaseRequired label on the linked issue using GitHub API
 #           $ gh api graphql -f query='{
@@ -199,7 +206,7 @@ jobs:
             exit 1
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: PR validation Success
         if: success()
