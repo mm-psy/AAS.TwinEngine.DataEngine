@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -118,7 +118,7 @@ jobs:
       # Generate container SBOM. 
       - name: Run Trivy in GitHub SBOM mode to generate CycloneDX SBOM for container
         if: ${{ github.event_name != 'pull_request' }}
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # 0.33.1
+        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # 0.34.2
         with:
           scan-type: 'image'
           format: 'cyclonedx'
@@ -128,7 +128,7 @@ jobs:
           
       - name: Upload trivy/container AND application SBOMs as a Github artifact
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: sbom
           path: '${{ github.workspace }}/sbom-output/'
