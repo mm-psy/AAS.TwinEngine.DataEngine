@@ -1,5 +1,4 @@
 ﻿using AAS.TwinEngine.DataEngine.Infrastructure.Configuration.LegacyV1.ConfigV1;
-using AAS.TwinEngine.DataEngine.Infrastructure.Providers.TemplateProvider.Config;
 using AAS.TwinEngine.DataEngine.ServiceConfiguration.Config;
 
 using Microsoft.Extensions.Options;
@@ -13,9 +12,7 @@ namespace AAS.TwinEngine.DataEngine.Infrastructure.Configuration.LegacyV1;
 [Obsolete("V1 configuration is deprecated and will be removed in next major release")]
 public sealed class LegacyTemplateManagementConfigAdapter(IConfiguration configuration) : IConfigureOptions<TemplateManagementConfig>
 {
-    private readonly IConfiguration _configuration = configuration;
-
-    public void Configure(TemplateManagementConfig options) => MapToConfig(_configuration, options);
+    public void Configure(TemplateManagementConfig options) => MapToConfig(configuration, options);
 
     /// <summary>
     /// Static entry point used during DI registration to apply V1 mapping without BuildServiceProvider().
@@ -42,6 +39,7 @@ public sealed class LegacyTemplateManagementConfigAdapter(IConfiguration configu
         var mappingRules = configuration.GetSection(TemplateMappingRules.Section).Get<TemplateMappingRules>();
         if (mappingRules != null)
         {
+            RemapLegacyExtractionRules(configuration, mappingRules);
             options.TemplateMappingRules = mappingRules;
         }
 
@@ -70,6 +68,7 @@ public sealed class LegacyTemplateManagementConfigAdapter(IConfiguration configu
             || mappingRules?.ShellTemplateMappings?.Count > 0
             || mappingRules?.AasIdExtractionRules?.Count > 0)
         {
+            RemapLegacyExtractionRules(configuration, mappingRules);
             options.TemplateMappingRules = mappingRules;
         }
 
@@ -147,6 +146,35 @@ public sealed class LegacyTemplateManagementConfigAdapter(IConfiguration configu
                 BaseUrl = aasEnv.SubModelRegistryBaseUrl,
                 HeaderMappings = []
             };
+        }
+    }
+
+    /// <summary>
+    /// V1 used { "Pattern": "Split", "Separator": "/", "Index": 6 }
+    /// where Pattern held the strategy name and Separator held the actual delimiter.
+    /// Detects this by checking for a "Separator" key in the raw config and remaps accordingly.
+    /// </summary>
+    private static void RemapLegacyExtractionRules(IConfiguration configuration, TemplateMappingRules rules)
+    {
+        var rulesSection = configuration.GetSection($"{TemplateMappingRules.Section}:AasIdExtractionRules");
+
+        for (var i = 0; i < rules.AasIdExtractionRules.Count; i++)
+        {
+            var separator = rulesSection.GetSection(i.ToString())["Separator"];
+
+            if (string.IsNullOrEmpty(separator))
+            {
+                continue;
+            }
+
+            var rule = rules.AasIdExtractionRules[i];
+            // In old config, "Pattern" was the strategy name (e.g. "Split")
+            if (Enum.TryParse<ExtractionStrategy>(rule.Pattern, ignoreCase: true, out var strategy))
+            {
+                rule.Strategy = strategy;
+            }
+
+            rule.Pattern = separator;
         }
     }
 }

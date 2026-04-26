@@ -1,8 +1,8 @@
-using AAS.TwinEngine.DataEngine.ServiceConfiguration.Config;
+﻿using AAS.TwinEngine.DataEngine.ServiceConfiguration.Config;
 
 using Microsoft.Extensions.Configuration;
 
-namespace AAS.TwinEngine.DataEngine.UnitTests.ServiceConfiguration.ConfigurationMigration;
+namespace AAS.TwinEngine.DataEngine.UnitTests.Infrastructure.Configuration.LegacyV1;
 
 /// <summary>
 /// Tests that V2 (new) configuration JSON binds directly to V2 POCO classes
@@ -213,9 +213,9 @@ public class V2DirectBindingTests
             ["TemplateManagement:TemplateMappingRules:SubmodelTemplateMappings:0:pattern:0"] = "Nameplate",
             ["TemplateManagement:TemplateMappingRules:ShellTemplateMappings:0:templateId"] = "https://mm-software.com/aas/aasTemplate",
             ["TemplateManagement:TemplateMappingRules:ShellTemplateMappings:0:pattern:0"] = "",
-            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "Regex",
-            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Index"] = "6",
-            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Separator"] = "/",
+            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Strategy"] = "Split",
+            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "/",
+            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Index"] = "5",
             ["TemplateManagement:AasTemplateRepository:Name"] = "AasTemplateRepository",
             ["TemplateManagement:AasTemplateRepository:baseUrl"] = "http://localhost:8081",
             ["TemplateManagement:AasTemplateRepository:headerMappings:0:source"] = "Authorization",

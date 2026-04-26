@@ -1,8 +1,9 @@
-﻿using AAS.TwinEngine.DataEngine.Infrastructure.Configuration.LegacyV1;
+﻿using AAS.TwinEngine.DataEngine.ApplicationLogic.Exceptions.Application;
+using AAS.TwinEngine.DataEngine.Infrastructure.Configuration.LegacyV1;
 
 using Microsoft.Extensions.Configuration;
 
-namespace AAS.TwinEngine.DataEngine.UnitTests.ServiceConfiguration.ConfigurationMigration;
+namespace AAS.TwinEngine.DataEngine.UnitTests.Infrastructure.Configuration.LegacyV1;
 
 #pragma warning disable CS0618 // Obsolete — testing V1 backward-compat code
 
@@ -63,7 +64,7 @@ public class LegacyConfigurationDetectorTests
     }
 
     [Fact]
-    public void IsV1Configuration_NullConfig_ThrowsArgumentNullException() => Assert.Throws<ArgumentNullException>(() => LegacyConfigurationDetector.IsV1Configuration(null!));
+    public void IsV1Configuration_NullConfig_ThrowsInvalidDependencyException() => Assert.Throws<InvalidDependencyException>(() => LegacyConfigurationDetector.IsV1Configuration(null!));
 
     private static IConfiguration BuildConfig(Dictionary<string, string?> values)
     {

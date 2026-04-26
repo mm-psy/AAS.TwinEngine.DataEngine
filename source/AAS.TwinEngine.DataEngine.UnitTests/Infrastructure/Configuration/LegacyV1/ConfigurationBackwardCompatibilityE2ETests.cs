@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace AAS.TwinEngine.DataEngine.UnitTests.ServiceConfiguration.ConfigurationMigration;
+namespace AAS.TwinEngine.DataEngine.UnitTests.Infrastructure.Configuration.LegacyV1;
 
 #pragma warning disable CS0618 // Obsolete — testing V1 backward-compat code
 
@@ -277,7 +277,7 @@ public class ConfigurationBackwardCompatibilityE2ETests
     private static ServiceProvider BuildServiceProvider(IConfiguration configuration)
     {
         var services = new ServiceCollection();
-        services.AddSingleton<IConfiguration>(configuration);
+        services.AddSingleton(configuration);
 
         // Register legacy adapters (no-op for V2, active for V1)
         services.AddLegacyV1ConfigurationAdapters();
@@ -332,9 +332,9 @@ public class ConfigurationBackwardCompatibilityE2ETests
             ["TemplateManagement:TemplateMappingRules:SubmodelTemplateMappings:0:pattern:0"] = "Nameplate",
             ["TemplateManagement:TemplateMappingRules:ShellTemplateMappings:0:templateId"] = "https://mm-software.com/aas/aasTemplate",
             ["TemplateManagement:TemplateMappingRules:ShellTemplateMappings:0:pattern:0"] = "",
-            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "Regex",
-            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Index"] = "6",
-            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Separator"] = "/",
+            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Strategy"] = "Split",
+            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "/",
+            ["TemplateManagement:TemplateMappingRules:AasIdExtractionRules:0:Index"] = "5",
             ["TemplateManagement:AasTemplateRepository:Name"] = "AasTemplateRepository",
             ["TemplateManagement:AasTemplateRepository:baseUrl"] = "http://localhost:8081",
             ["TemplateManagement:AasTemplateRepository:headerMappings:0:source"] = "Authorization",
@@ -365,6 +365,7 @@ public class ConfigurationBackwardCompatibilityE2ETests
                 merged[kvp.Key] = kvp.Value;
             }
         }
+
         return merged;
     }
 
@@ -425,7 +426,7 @@ public class ConfigurationBackwardCompatibilityE2ETests
             ["TemplateMappingRules:SubmodelTemplateMappings:0:pattern:0"] = "Nameplate",
             ["TemplateMappingRules:ShellTemplateMappings:0:templateId"] = "https://mm-software.com/aas/aasTemplate",
             ["TemplateMappingRules:ShellTemplateMappings:0:pattern:0"] = "",
-            ["TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "Regex",
+            ["TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "Split",
             ["TemplateMappingRules:AasIdExtractionRules:0:Index"] = "6",
             ["TemplateMappingRules:AasIdExtractionRules:0:Separator"] = "/",
 

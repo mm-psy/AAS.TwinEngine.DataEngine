@@ -3,7 +3,7 @@ using AAS.TwinEngine.DataEngine.ServiceConfiguration.Config;
 
 using Microsoft.Extensions.Configuration;
 
-namespace AAS.TwinEngine.DataEngine.UnitTests.ServiceConfiguration.ConfigurationMigration;
+namespace AAS.TwinEngine.DataEngine.UnitTests.Infrastructure.Configuration.LegacyV1;
 
 #pragma warning disable CS0618 // Obsolete — testing V1 backward-compat code
 
@@ -153,9 +153,9 @@ public class LegacyTemplateManagementConfigAdapterTests
         adapter.Configure(options);
 
         Assert.Single(options.TemplateMappingRules.AasIdExtractionRules);
-        Assert.Equal("Regex", options.TemplateMappingRules.AasIdExtractionRules[0].Pattern);
+        Assert.Equal("/", options.TemplateMappingRules.AasIdExtractionRules[0].Pattern);
         Assert.Equal(6, options.TemplateMappingRules.AasIdExtractionRules[0].Index);
-        Assert.Equal("/", options.TemplateMappingRules.AasIdExtractionRules[0].Separator);
+        Assert.Equal(ExtractionStrategy.Split, options.TemplateMappingRules.AasIdExtractionRules[0].Strategy);
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public class LegacyTemplateManagementConfigAdapterTests
             ["TemplateMappingRules:SubmodelTemplateMappings:1:pattern:0"] = "CarbonFootprint",
             ["TemplateMappingRules:ShellTemplateMappings:0:templateId"] = "https://mm-software.com/aas/aasTemplate",
             ["TemplateMappingRules:ShellTemplateMappings:0:pattern:0"] = "",
-            ["TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "Regex",
+            ["TemplateMappingRules:AasIdExtractionRules:0:Pattern"] = "Split",
             ["TemplateMappingRules:AasIdExtractionRules:0:Index"] = "6",
             ["TemplateMappingRules:AasIdExtractionRules:0:Separator"] = "/",
             ["HttpRetryPolicyOptions:TemplateProvider:MaxRetryAttempts"] = "3",

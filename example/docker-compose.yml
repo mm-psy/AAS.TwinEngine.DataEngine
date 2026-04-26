@@ -52,9 +52,9 @@ services:
       - TemplateManagement__TemplateMappingRules__SubmodelTemplateMappings__4__pattern__0=HandoverDocumentation
       - TemplateManagement__TemplateMappingRules__ShellTemplateMappings__0__templateId=https://mm-software.com/aas/aasTemplate
       - TemplateManagement__TemplateMappingRules__ShellTemplateMappings__0__pattern__0=
-      - TemplateManagement__TemplateMappingRules__AasIdExtractionRules__0__Pattern=Regex
-      - TemplateManagement__TemplateMappingRules__AasIdExtractionRules__0__Index=6
-      - TemplateManagement__TemplateMappingRules__AasIdExtractionRules__0__Separator=/
+      - TemplateManagement__TemplateMappingRules__AasIdExtractionRules__0__Strategy=Split
+      - TemplateManagement__TemplateMappingRules__AasIdExtractionRules__0__Pattern=/
+      - TemplateManagement__TemplateMappingRules__AasIdExtractionRules__0__Index=5
       - TemplateManagement__AasTemplateRepository__Name=AasTemplateRepository
       - TemplateManagement__AasTemplateRepository__baseUrl=http://template-repository:8081
       - TemplateManagement__AasTemplateRepository__headerMappings__0__source=Authorization
@@ -110,9 +110,10 @@ services:
       - ExtractionRules__SubmodelNameExtractionRules__4__pattern__0=CarbonFootprint
       - ExtractionRules__SubmodelNameExtractionRules__4__pattern__1=Footprint
       - ExtractionRules__SubmodelNameExtractionRules__4__pattern__2=Carbon
-      - ExtractionRules__ProductIdExtractionRules__0__Pattern=Regex
+      - ExtractionRules__ProductIdExtractionRules__0__Pattern=/
       - ExtractionRules__ProductIdExtractionRules__0__Index=5
-      - ExtractionRules__ProductIdExtractionRules__0__Separator=/
+      - ExtractionRules__ProductIdExtractionRules__0__Strategy=Split
+      - ExtractionRules__ProductIdExtractionRules__0__Description=Default split by '/' segment 5
     networks:
       - twinengine-network
 
